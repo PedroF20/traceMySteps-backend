@@ -6,13 +6,14 @@ Python development of the back-end for traceMySteps. Connects with AngularJS fro
 
 ### TODO List:
 
-1) Test data insertion on the DB.
+<s>1) Test data insertion on the DB.</s>
 
-2) Test querying.
+<s>2) Test querying.</s>
 
-3) Complete `app.py`.
+3) Parsing and batch load of multiple GPX files into DB.
 
-4) Batch load of multiple GPX files into DB.
+4) Complete `app.py` with the required resources/routes and queries, having in mind the GeoJSON format for the geographic data.
+
 
 ### Minor bugs:
 
