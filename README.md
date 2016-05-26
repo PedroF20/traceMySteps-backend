@@ -40,7 +40,7 @@ export PGDATA='/usr/local/var/postgres'
 6) Enter postgres default database at start, to run schema to create our database:
 ```
 psql postgres
-\i schema.sql
+\i PATH_TO/schema.sql
 ```
 
 7) Run the app:
