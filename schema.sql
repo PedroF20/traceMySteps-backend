@@ -8,27 +8,22 @@ CREATE EXTENSION postgis;
 DROP TABLE IF EXISTS trips CASCADE;
 DROP TABLE IF EXISTS locations CASCADE;
 
--- CREATE TYPE _timestamp as TIMESTAMP WITHOUT TIME ZONE
--- CREATE TYPE _bounds as GEOGRAPHY(POLYGON, 4326)
--- CREATE TYPE _line as GEOGRAPHY(POINTLINE, 4326)
--- CREATE TYPE location_id as bigint
-
 CREATE TABLE IF NOT EXISTS trips (
   trip_id SERIAL PRIMARY KEY,
 
   start_location bigint NULL,
   end_location bigint NULL,
 
-  start_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- NOT NULL
-  end_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- NOT NULL
+  start_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- IS NOT NULL
+  end_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- IS NOT NULL
 
-  bounds geography(POLYGON, 4326)  NULL, -- NOT NULL
-  points geography(LINESTRING, 4326)  NULL,  -- LINESTRING OR MULTIPOINT? -- NOT NULL
+  bounds geography(POLYGON, 4326)  NULL, -- IS NOT NULL
+  points geography(LINESTRING, 4326)  NULL,  -- LINESTRING OR MULTIPOINT? -- IS NOT NULL
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
 
   -- Length of timestamps must be the same as the lenght of points
-  timestamps TIMESTAMP WITHOUT TIME ZONE[]  NULL -- NOT NULL
+  timestamps TIMESTAMP WITHOUT TIME ZONE[]  NULL -- IS NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS trips_transportation_modes (
