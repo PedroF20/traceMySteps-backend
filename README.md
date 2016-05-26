@@ -21,6 +21,7 @@ Python development of the back-end for traceMySteps. Connects with AngularJS fro
 1) Install Postgres and Postgis:
 
 `brew install postgres`
+`brew install postgis`
 
 
 ## Dependencies
