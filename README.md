@@ -44,7 +44,7 @@ psql postgres
 ```
 
 7) Run the app:
-`python app.py``
+`python app.py`
 
 8) Stop server:
 `pg_ctl stop`
