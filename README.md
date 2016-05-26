@@ -46,12 +46,13 @@ psql postgres
 7) To quit the created tracemysteps DB:
 `\q`
   
-    7.1) `psql tracemysteps`to reconnect
+8) To re-access the tracemysteps DB:
+`psql tracemysteps`
 
-8) Run the app:
+9) Run the app:
 `python app.py`
 
-9) Stop server:
+10) Stop server:
 `pg_ctl stop`
 
 I strongly advise the use of the pgAdmin3 tool as a visual aid and complement to the shell commands.
