@@ -14,15 +14,12 @@ api = Api(app)
 
 
 def connectDB():
-    host = getenv('DB_HOST')
-    name = getenv('DB_NAME')
-    user = getenv('DB_USER')
-    password = getenv('DB_PASS')
+    connectionString = 'dbname=tracemysteps user=PedroFrancisco host=localhost'
+    #print connectionString
     try:
-        if host != None and name != None and user != None and password != None:
-            return psycopg2.connect("host=%s dbname=%s user=%s password=%s" % (host, name, user, password))
+      return psycopg2.connect(connectionString)
     except:
-        print("Can't connect to database")
+      print("Can't connect to database")
 
 
 @app.after_request
@@ -32,9 +29,27 @@ def after_request(response):
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   return response
 
+
 @app.route("/")
 def Home():
 	return render_template("index.html")
+
+
+class Example(Resource):
+    def get(self):
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        try:
+          cur.execute("select trip_id from trips_transportation_modes")
+        except:
+          print("Error executing select")
+        MyList = list (i[0] for i in cur.fetchall())
+        return jsonify ({'trip_id':MyList})
+
+
+api.add_resource(Example, '/example')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

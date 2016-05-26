@@ -19,16 +19,16 @@ CREATE TABLE IF NOT EXISTS trips (
   start_location bigint NULL,
   end_location bigint NULL,
 
-  start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  start_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- NOT NULL
+  end_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- NOT NULL
 
-  bounds geography(POLYGON, 4326) NOT NULL,
-  points geography(LINESTRING, 4326) NOT NULL,  -- LINESTRING OR MULTIPOINT?
+  bounds geography(POLYGON, 4326)  NULL, -- NOT NULL
+  points geography(LINESTRING, 4326)  NULL,  -- LINESTRING OR MULTIPOINT? -- NOT NULL
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
 
   -- Length of timestamps must be the same as the lenght of points
-  timestamps TIMESTAMP WITHOUT TIME ZONE[] NOT NULL
+  timestamps TIMESTAMP WITHOUT TIME ZONE[]  NULL -- NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS trips_transportation_modes (
@@ -61,3 +61,9 @@ CREATE TABLE IF NOT EXISTS stays (
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
+
+INSERT INTO trips (trip_id) VALUES (1);
+INSERT INTO trips_transportation_modes (trip_id, label, start_date, end_date, start_index, end_index, bounds) VALUES (1, 'exemplo', '2015-10-19 10:23:54',
+'2015-10-19 19:23:54', 10, 11, ST_GeomFromText('POLYGON((6 15, 10 10, 20 10, 25 15, 25 35, 19 40, 11 40, 6 25, 6 15))', 4326));
+
+
