@@ -46,7 +46,7 @@ psql postgres
 7) To quit the created tracemysteps DB:
 `\q`
   
-  7.1) `psql tracemysteps`to reconnect
+    7.1) `psql tracemysteps`to reconnect
 
 8) Run the app:
 `python app.py`
