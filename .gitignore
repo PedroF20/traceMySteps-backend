@@ -62,5 +62,5 @@ target/
 .ipynb_checkpoints
 
 #Other files
-postgres_commands
+postgres_commands.rtf
 requirements.txt
