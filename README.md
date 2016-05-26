@@ -55,4 +55,4 @@ This Readme will be updated, whenever possible, with the progress on the develop
 
 ## Dependencies
 
-Available on `setup.py`.
+Available on `setup.py`
