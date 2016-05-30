@@ -8,11 +8,19 @@ CREATE EXTENSION postgis;
 DROP TABLE IF EXISTS trips CASCADE;
 DROP TABLE IF EXISTS locations CASCADE;
 
+CREATE TABLE IF NOT EXISTS locations (
+  label TEXT PRIMARY KEY,
+  -- Point representative of the location
+  centroid GEOGRAPHY(POINTZ, 4326) NOT NULL,
+  -- Cluster of points that derived the location
+  point_cluster geography(MULTIPOINT, 4326) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS trips (
   trip_id SERIAL PRIMARY KEY,
 
-  start_location bigint NULL,
-  end_location bigint NULL,
+  start_location TEXT REFERENCES locations(label) NULL, -- erase NULL
+  end_location TEXT REFERENCES locations(label) NULL, -- erase NULL
 
   start_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- IS NOT NULL
   end_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- IS NOT NULL
@@ -22,7 +30,7 @@ CREATE TABLE IF NOT EXISTS trips (
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
 
-  -- Length of timestamps must be the same as the lenght of points
+  -- Length of timestamps must be the same as the length of points
   timestamps TIMESTAMP WITHOUT TIME ZONE[]  NULL -- IS NOT NULL
 );
 
@@ -39,14 +47,6 @@ CREATE TABLE IF NOT EXISTS trips_transportation_modes (
   start_index INTEGER NOT NULL,
   end_index INTEGER NOT NULL,
   bounds GEOGRAPHY(POLYGON, 4326) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS locations (
-  label TEXT PRIMARY KEY,
-  -- Point representative of the location
-  centroid GEOGRAPHY(POINTZ, 4326) NOT NULL,
-  -- Cluster of points that derived the location
-  point_cluster geography(MULTIPOINT, 4326) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS stays (
