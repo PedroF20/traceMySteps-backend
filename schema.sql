@@ -26,12 +26,14 @@ CREATE TABLE IF NOT EXISTS trips (
   end_date TIMESTAMP WITHOUT TIME ZONE  NULL, -- IS NOT NULL
 
   bounds geography(POLYGON, 4326)  NULL, -- IS NOT NULL
-  points geography(LINESTRING, 4326)  NULL,  -- LINESTRING OR MULTIPOINT? -- IS NOT NULL
+  points geography(LINESTRING, 4326)  NULL, -- IS NOT NULL
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
 
   -- Length of timestamps must be the same as the length of points
   timestamps TIMESTAMP WITHOUT TIME ZONE[]  NULL -- IS NOT NULL
+  -- para efeitos de load, cada track e uma trip
+
 );
 
 CREATE TABLE IF NOT EXISTS trips_transportation_modes (
@@ -55,6 +57,7 @@ CREATE TABLE IF NOT EXISTS stays (
   location_label TEXT REFERENCES locations(label),
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
+  -- cada linha de um LIFE e uma stay
 );
 
 INSERT INTO trips (trip_id) VALUES (1);
