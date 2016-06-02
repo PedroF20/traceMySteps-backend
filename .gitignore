@@ -63,6 +63,5 @@ target/
 
 #Other files
 postgres_commands.rtf
-requirements.txt
 
 *.gpx
