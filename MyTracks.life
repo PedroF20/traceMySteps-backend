@@ -15,12 +15,12 @@ UTC
 
 --2016_01_16
 0000-2136: home
-2147-2200: friend's house
+2147-2200: friend's house {fabio}
 2210-2359: bar [drinks] {domus bar}
 
 --2016_01_17
 0000-0100: bar [drinks] {domus bar}
-0130-2359: home [dinner]
+0130-2359: home
 
 --2016_01_19
 0000-0915: home
@@ -85,3 +85,42 @@ UTC
 1925-2359: home [dinner]
 
 --2016_01_29
+0000-2146: home
+2200-2202: friend's house {fabio}
+2215-2337: bar [drinks] {domus bar}
+
+--2016_01_30
+0021-1415: home
+1425-1430: seixalinho station
+1500-1505: cais do sodre station
+1506-1530: cais do sodre station->saldanha station
+1531-1533: saldanha station
+1535-1600: friend's house {rodrigo}
+1728-1800: continente lourel ;buying food and drinks for friend's party
+1820-2359: friend's house {paulo}
+
+--2016_01_31
+0000-1300: friend's house {paulo}
+1515-1534: massama train station {waiting for the train back to Lisbon}
+1535-1606: massama train station->rossio train station
+1609-1611: rossio station
+1612-1619: rossio station->cais do sodre station
+1620-1630: cais do sodre station {Waiting for the boat trip back to Montijo}
+1710-2359: home [dinner]
+
+--2016_02_02
+0000-0912: home
+0921-0930: seixalinho station
+1000-1004: cais do sodre station
+1005-1024: cais do sodre station->saldanha station
+1024-1026: saldanha station
+1030-1314: INESC
+1324-1349: dolce vita monumental [lunch]
+1359-1754: INESC
+1804-1806: alameda station
+1807-1821: alameda station->cais do sodre station
+1822-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1920-2359: home [dinner]
+
+
+
