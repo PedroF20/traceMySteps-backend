@@ -215,6 +215,8 @@ UTC
 1404-1420: cais do sodre station->alameda station
 1424-1510: IST-alameda
 1511-1540: IST-alameda->IST-taguspark
+1541-1710: IST-taguspark
+1711-1732: IST-taguspark->sete rios station
 1733-1735: sete rios station
 1736-1747: sete rios station->baixa-chiado station
 1755-1758: padaria portuguesa [snack] ;shop in rua do ouro
@@ -288,3 +290,16 @@ UTC
 1709-1720: alameda station->cais do sodre station
 1722-1730: cais do sodre station {Waiting for the boat trip back to Montijo}
 1818-2359: home [dinner]
+
+--2016_04_04
+0000-0845: home
+0857-0902: seixalinho station
+0930-0935: cais do sodre station
+0936-0945: cais do sodre station->alameda station
+1010-1042: IST-alameda->IST-taguspark
+1043-1710: IST-taguspark
+1711-1733: IST-taguspark->sete rios staion
+1735-1738: sete rios station
+1739-1755: sete rios station->cais do sodre station
+1757-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1929-2359: home [dinner]
