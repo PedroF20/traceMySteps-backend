@@ -90,7 +90,7 @@ UTC
 2215-2337: bar [drinks] {domus bar}
 
 --2016_01_30
-0021-1415: home
+0021-1415: home [lunch]
 1425-1430: seixalinho station
 1500-1505: cais do sodre station
 1506-1530: cais do sodre station->saldanha station
@@ -135,14 +135,14 @@ UTC
 1915-2359: home [dinner]
 
 --2016_02_05
-0000-1811: home
+0000-1811: home [lunch]
 1820-1830: seixalinho station
 1900-1904: cais do sodre station
 1905-1930: cais do sodre station->quinta das conchas station
 1934-2359: friend's house [dinner] {nunes}
 
 --2016_02_08
-0000-1615: home
+0000-1615: home [lunch]
 1625-1630: seixalinho station
 1700-1704: cais do sodre station
 1705-1719: cais do sodre station->saldanha station
@@ -209,7 +209,7 @@ UTC
 1920-2359: home [dinner]
 
 --2016_02_25
-0000-1317: home
+0000-1317: home [lunch]
 1325-1330: seixalinho station
 1400-1403: cais do sodre station
 1404-1420: cais do sodre station->alameda station
@@ -303,3 +303,58 @@ UTC
 1739-1755: sete rios station->cais do sodre station
 1757-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
 1929-2359: home [dinner]
+
+--2016_04_06
+0000-0916: home
+0928-0930: seixalinho station
+1000-1004: cais do sodre station
+1005-1025: cais do sodre station->saldanha station
+1025-1027: saldanha station
+1029-1312: INESC
+1321-1341: atrium saldanha [lunch]
+1353-1420: choupana caffe [coffee] {with some friends}
+1429-1757: INESC
+1805-1806: alameda station
+1807-1824: alameda station->cais do sodre station
+1827-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1929-2359: home [dinner]
+
+--2016_04_25
+0000-1243: home
+1401-1525: xica bia [leisure|lunch] {fried calamari} ;went to setubal on the holiday
+1608-2359: home [dinner]
+
+--2016_05_02
+0000-1407: home [lunch]
+1416-1439: forum montijo [shopping]
+1446-1448: pingo doce [shopping] ;it was quick, didnt have what was needed
+1452-1503: intermarche [shopping]
+1509-2359: home [dinner]
+
+--2016_05_03
+0000-0916: home
+0927-0930: seixalinho station
+1000-1004: cais do sodre station
+1005-1025: cais do sodre station->saldanha station
+1025-1026: saldanha station
+1028-1320: INESC
+1331-1358: atrium saldanha [lunch]
+1422-1724: INESC
+1734-1736: alameda station
+1737-1751: alameda station->cais do sodre station
+1753-1800: cais do sodre station {Waiting for the boat trip back to Montijo}
+1854-2359: home [dinner]
+
+--2016_05_04
+0000-0916: home
+0928-0930: seixalinho station
+1000-1004: cais do sodre station
+1005-1027: cais do sodre station->saldanha station
+1028-1029: saldanha station
+1033-1313: INESC
+1328-1345: atrium saldanha [lunch]
+1400-1752: INESC
+1800-1803: alameda station
+1804-1815: alameda station->cais do sodre station
+1818-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1923-2359: home [dinner]
