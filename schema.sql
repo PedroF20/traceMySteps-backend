@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS trips (
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, -- IS NOT NULL
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, -- IS NOT NULL
 
-  bounds geography(POLYGONZ, 4326) NOT NULL, -- IS NOT NULL
+  bounds geography(POLYGONZ, 4326) NULL, -- IS NOT NULL
   points geography(LINESTRINGZ, 4326) NOT NULL, -- IS NOT NULL
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.

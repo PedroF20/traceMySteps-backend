@@ -16,7 +16,7 @@ UTC
 --2016_01_16
 0000-2136: home
 2147-2200: friend's house {fabio}
-2210-2359: bar [drinks] {domus bar}
+2210-2359: bar[drinks]{domus bar}
 
 --2016_01_17
 0000-0100: bar [drinks] {domus bar}
@@ -96,7 +96,7 @@ UTC
 1506-1530: cais do sodre station->saldanha station
 1531-1533: saldanha station
 1535-1600: friend's house {rodrigo}
-1728-1800: continente lourel ;buying food and drinks for friend's party
+1728-1800: continente lourel ; buying food and drinks for friend's party
 1820-2359: friend's house {paulo}
 
 --2016_01_31
@@ -148,7 +148,7 @@ UTC
 1705-1719: cais do sodre station->saldanha station
 1720-1722: saldanha station
 1727-1745: INCM
-1915-2359: torres vedras [dinner] ;carnival
+1915-2359: torres vedras [dinner] ; carnival
 
 --2016_02_09
 0000-1230: torres vedras
@@ -219,7 +219,7 @@ UTC
 1711-1732: IST-taguspark->sete rios station
 1733-1735: sete rios station
 1736-1747: sete rios station->baixa-chiado station
-1755-1758: padaria portuguesa [snack] ;shop in rua do ouro
+1755-1758: padaria portuguesa [snack] ; shop in rua do ouro
 1815-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
 1921-2359: home [dinner]
 
@@ -321,13 +321,13 @@ UTC
 
 --2016_04_25
 0000-1243: home
-1401-1525: xica bia [leisure|lunch] {fried calamari} ;went to setubal on the holiday
+1401-1525: xica bia [leisure|lunch] {fried calamari} ; went to setubal on the holiday
 1608-2359: home [dinner]
 
 --2016_05_02
 0000-1407: home [lunch]
 1416-1439: forum montijo [shopping]
-1446-1448: pingo doce [shopping] ;it was quick, didnt have what was needed
+1446-1448: pingo doce [shopping] ; it was quick, didnt have what was needed
 1452-1503: intermarche [shopping]
 1509-2359: home [dinner]
 
