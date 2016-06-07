@@ -22,6 +22,7 @@ def dbBounds(bound):
                 ppygis.Point(bound[2], bound[1], 0, srid=4336),
                 ppygis.Point(bound[2], bound[3], 0, srid=4336)])]).write_ewkb()
 
+
 def insertLocation(cur, label, point):
     cur.execute("""
             SELECT label, centroid, point_cluster
@@ -57,7 +58,7 @@ def insertLocation(cur, label, point):
                 """, (label, dbPoint(point), dbPoints([point])))
 
 
-def insertTrip(trip):
+def insertTrip(cur, trip):
     for segment in trip.segments:
         insertSegment(segment)
 
@@ -100,6 +101,7 @@ def insertSegment(cur, segment):
 
     return trip_id
 
+#def insertStay(cur, label, trip_id, date?):
 
 def connectDB():
     connectionString = 'dbname=tracemysteps user=PedroFrancisco host=localhost'
@@ -108,6 +110,7 @@ def connectDB():
       return psycopg2.connect(connectionString)
     except:
       print("Can't connect to database")
+
 
 def load(gpx):
 	conn = connectDB()

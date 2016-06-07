@@ -16,10 +16,10 @@ UTC
 --2016_01_16
 0000-2136: home
 2147-2200: friend's house {fabio}
-2210-2359: bar[drinks]{domus bar}
+2210-2359: bar [drinks]{domus bar}
 
 --2016_01_17
-0000-0100: bar [drinks] {domus bar}
+0000-0100: bar [drinks]{domus bar}
 0130-2359: home
 
 --2016_01_19
@@ -66,7 +66,7 @@ UTC
 1339-1726: INESC
 1735-1736: alameda station
 1737-1751: alameda station->cais do sodre station
-1752-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1752-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1925-2359: home [dinner]
 
 --2016_01_28
@@ -81,13 +81,13 @@ UTC
 1451-1744: INESC
 1758-1803: alameda station
 1804-1817: alameda station->cais do sodre station
-1818-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1818-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1925-2359: home [dinner]
 
 --2016_01_29
 0000-2146: home
 2200-2202: friend's house {fabio}
-2215-2337: bar [drinks] {domus bar}
+2215-2337: bar [drinks]{domus bar}
 
 --2016_01_30
 0021-1415: home [lunch]
@@ -95,12 +95,12 @@ UTC
 1500-1505: cais do sodre station
 1506-1530: cais do sodre station->saldanha station
 1531-1533: saldanha station
-1535-1600: friend's house {rodrigo}
-1728-1800: continente lourel ; buying food and drinks for friend's party
+1535-1600: friend's house{rodrigo}
+1728-1800: continente lourel ;buying food and drinks for friend's party
 1820-2359: friend's house {paulo}
 
 --2016_01_31
-0000-1300: friend's house {paulo}
+0000-1300: friend's house{paulo}
 1515-1534: massama train station {waiting for the train back to Lisbon}
 1535-1606: massama train station->rossio train station
 1609-1611: rossio station
@@ -119,7 +119,7 @@ UTC
 1359-1754: INESC
 1804-1806: alameda station
 1807-1821: alameda station->cais do sodre station
-1822-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1822-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1920-2359: home [dinner]
 
 --2016_02_04
@@ -131,7 +131,7 @@ UTC
 1028-1758: IST-alameda {rnl}
 1804-1805: alameda station
 1806-1819: alameda station->cais do sodre station
-1820-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1820-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1915-2359: home [dinner]
 
 --2016_02_05
@@ -139,7 +139,7 @@ UTC
 1820-1830: seixalinho station
 1900-1904: cais do sodre station
 1905-1930: cais do sodre station->quinta das conchas station
-1934-2359: friend's house [dinner] {nunes}
+1934-2359: friend's house [dinner]{nunes}
 
 --2016_02_08
 0000-1615: home [lunch]
@@ -148,7 +148,7 @@ UTC
 1705-1719: cais do sodre station->saldanha station
 1720-1722: saldanha station
 1727-1745: INCM
-1915-2359: torres vedras [dinner] ; carnival
+1915-2359: torres vedras [dinner] ;carnival
 
 --2016_02_09
 0000-1230: torres vedras
@@ -165,7 +165,7 @@ UTC
 1310-1721: INESC
 1731-1733: alameda station
 1734-1746: alameda station->cais do sodre station
-1747-1800: cais do sodre station {Waiting for the boat trip back to Montijo}
+1747-1800: cais do sodre station{Waiting for the boat trip back to Montijo}
 1859-2359: home [dinner]
 
 --2016_02_16
@@ -179,7 +179,7 @@ UTC
 1349-1757: INESC
 1805-1806: alameda station
 1807-1820: alameda station->cais do sodre station
-1822-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1822-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1924-2359: home [dinner]
 
 --2016_02_17
@@ -191,7 +191,7 @@ UTC
 1032-1755: INESC
 1804-1806: alameda station
 1807-1821: alameda station->cais do sodre station
-1823-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1823-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1933-2359: home [dinner]
 
 --2016_02_22
@@ -205,7 +205,7 @@ UTC
 1415-1754: INESC
 1804-1806: alameda station
 1807-1821: alameda station->cais do sodre station
-1822-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1822-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1920-2359: home [dinner]
 
 --2016_02_25
@@ -219,8 +219,8 @@ UTC
 1711-1732: IST-taguspark->sete rios station
 1733-1735: sete rios station
 1736-1747: sete rios station->baixa-chiado station
-1755-1758: padaria portuguesa [snack] ; shop in rua do ouro
-1815-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1755-1758: padaria portuguesa [snack] ;shop in rua do ouro
+1815-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1921-2359: home [dinner]
 
 --2016_03_02
@@ -234,7 +234,7 @@ UTC
 1435-1723: INESC
 1732-1733: alameda station
 1734-1750: alameda station->cais do sodre station
-1753-1800: cais do sodre station {Waiting for the boat trip back to Montijo}
+1753-1800: cais do sodre station{Waiting for the boat trip back to Montijo}
 1851-2359: home [dinner]
 
 --2016_03_08
@@ -248,7 +248,7 @@ UTC
 1413-1822: INESC
 1832-1833: alameda station
 1834-1846: alameda station->cais do sodre station
-1848-1900: cais do sodre station {Waiting for the boat trip back to Montijo}
+1848-1900: cais do sodre station{Waiting for the boat trip back to Montijo}
 2010-2359: home [dinner]
 
 --2016_03_09
@@ -262,7 +262,7 @@ UTC
 1413-1722: INESC
 1732-1733: alameda station
 1734-1752: alameda station->cais do sodre station
-1754-1800: cais do sodre station {Waiting for the boat trip back to Montijo}
+1754-1800: cais do sodre station{Waiting for the boat trip back to Montijo}
 1851-2359: home [dinner]
 
 --2016_03_16
@@ -276,7 +276,7 @@ UTC
 1350-1727: INESC
 1735-1736: alameda station
 1737-1750: alameda station->cais do sodre station
-1752-1800: cais do sodre station {Waiting for the boat trip back to Montijo}
+1752-1800: cais do sodre station{Waiting for the boat trip back to Montijo}
 1851-2359: home [dinner]
 
 --2016_03_31
@@ -288,7 +288,7 @@ UTC
 1130-1700: IST-alameda {rnl}
 1706-1708: alameda station
 1709-1720: alameda station->cais do sodre station
-1722-1730: cais do sodre station {Waiting for the boat trip back to Montijo}
+1722-1730: cais do sodre station{Waiting for the boat trip back to Montijo}
 1818-2359: home [dinner]
 
 --2016_04_04
@@ -301,7 +301,7 @@ UTC
 1711-1733: IST-taguspark->sete rios staion
 1735-1738: sete rios station
 1739-1755: sete rios station->cais do sodre station
-1757-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1757-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1929-2359: home [dinner]
 
 --2016_04_06
@@ -312,22 +312,22 @@ UTC
 1025-1027: saldanha station
 1029-1312: INESC
 1321-1341: atrium saldanha [lunch]
-1353-1420: choupana caffe [coffee] {with some friends}
+1353-1420: choupana caffe [coffee]{with some friends}
 1429-1757: INESC
 1805-1806: alameda station
 1807-1824: alameda station->cais do sodre station
-1827-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1827-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1929-2359: home [dinner]
 
 --2016_04_25
 0000-1243: home
-1401-1525: xica bia [leisure|lunch] {fried calamari} ; went to setubal on the holiday
+1401-1525: xica bia [leisure|lunch]{fried calamari} ;went to setubal on the holiday
 1608-2359: home [dinner]
 
 --2016_05_02
 0000-1407: home [lunch]
 1416-1439: forum montijo [shopping]
-1446-1448: pingo doce [shopping] ; it was quick, didnt have what was needed
+1446-1448: pingo doce [shopping] ;it was quick, didnt have what was needed
 1452-1503: intermarche [shopping]
 1509-2359: home [dinner]
 
@@ -342,7 +342,7 @@ UTC
 1422-1724: INESC
 1734-1736: alameda station
 1737-1751: alameda station->cais do sodre station
-1753-1800: cais do sodre station {Waiting for the boat trip back to Montijo}
+1753-1800: cais do sodre station{Waiting for the boat trip back to Montijo}
 1854-2359: home [dinner]
 
 --2016_05_04
@@ -356,5 +356,5 @@ UTC
 1400-1752: INESC
 1800-1803: alameda station
 1804-1815: alameda station->cais do sodre station
-1818-1830: cais do sodre station {Waiting for the boat trip back to Montijo}
+1818-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1923-2359: home [dinner]
