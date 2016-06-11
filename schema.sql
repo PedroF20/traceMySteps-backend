@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS trips (
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, -- IS NOT NULL
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, -- IS NOT NULL
 
-  bounds geography(POLYGONZ, 4326) NULL, -- IS NOT NULL
+  bounds geography(POLYGONZ, 4326) NOT NULL, -- IS NOT NULL
   points geography(LINESTRINGZ, 4326) NOT NULL, -- IS NOT NULL
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS trips (
 );
 
 CREATE TABLE IF NOT EXISTS trips_transportation_modes (
-  mode_id SERIAL PRIMARY KEY,
+  mode_id SERIAL PRIMARY KEY, -- String
   trip_id SERIAL REFERENCES trips(trip_id) NOT NULL,
 
   label TEXT NOT NULL,

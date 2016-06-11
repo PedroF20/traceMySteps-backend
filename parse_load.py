@@ -8,11 +8,14 @@ import gpxpy.gpx
 from life_source import Life
 from datetime import datetime, timedelta
 
+
 def dbPoint(point):
     return ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326).write_ewkb()
 
+
 def dbPoints(points):
     return ppygis.LineString(map(lambda p: ppygis.Point(p.latitude, p.longitude, p.elevation, srid=4326), points), 4326).write_ewkb()
+
 
 def dbBounds(bound):
     return ppygis.Polygon([
@@ -22,6 +25,45 @@ def dbBounds(bound):
                 ppygis.Point(bound[2], bound[1], 0, srid=4336),
                 ppygis.Point(bound[2], bound[3], 0, srid=4336)])]).write_ewkb()
 
+def getBounds(segment, lowerIndex = 0, upperIndex = -1):
+        """Computes the bounds of the segment, or part of it
+        Args:
+            lowerIndex: Optional, start index. Default is 0
+            upperIndex: Optional, end index. Default is -1,
+                the last point
+        Returns:
+            Array with two arrays. The first one with the
+            minimum latitude and longitude, the second with
+            the maximum latitude and longitude of the segment
+            slice
+        """
+        pointSet = segment.points[lowerIndex:upperIndex]
+
+        minLat = float("inf")
+        minLon = float("inf")
+        maxLat = -float("inf")
+        maxLon = -float("inf")
+
+        for point in pointSet:
+            minLat = min(minLat, point.latitude)
+            minLon = min(minLon, point.longitude)
+            maxLat = max(maxLat, point.latitude)
+            maxLon = max(maxLon, point.longitude)
+
+        return (minLat, minLon, maxLat, maxLon)
+
+def getTrackBounds(track):
+        minLat = float("inf")
+        minLon = float("inf")
+        maxLat = -float("inf")
+        maxLon = -float("inf")
+        for segment in track.segments:
+            milat, milon, malat, malon = getBounds(segment)
+            minLat = min(milat, minLat)
+            minLon = min(milon, minLon)
+            maxLat = max(malat, maxLat)
+            maxLon = max(malon, maxLon)
+        return minLat, minLon, maxLat, maxLon
 
 def insertLocation(cur, label, point):
     cur.execute("""
@@ -52,10 +94,27 @@ def insertLocation(cur, label, point):
         #        """, (label, ))
     else:
         # Creates new location
+        print label
         cur.execute("""
                 INSERT INTO locations (label, centroid, point_cluster)
                 VALUES (%s, %s, %s)
                 """, (label, dbPoint(point), dbPoints([point])))
+        print label
+
+
+def insertTransportationMode(cur, tmode, trip_id, segment):
+    label = tmode['label']
+    fro = tmode['from']
+    to = tmode['to']
+    cur.execute("""
+            INSERT INTO trips_transportation_modes(trip_id, label, start_date, end_date, start_index, end_index, bounds)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+            (   trip_id, label,
+                segment.points[fro].time,
+                segment.points[to].time,
+                fro, to,
+                dbBounds(getBounds(segment, fro, to))))
 
 
 def insertTrip(cur, trip):
@@ -69,6 +128,8 @@ def insertTrip(cur, trip):
             # """, (trip_id, a))
 
 
+#def insertStay(cur, label, trip_id, date?):
+
 
 def insertSegment(cur, segment):
 
@@ -79,17 +140,17 @@ def insertSegment(cur, segment):
         return psycopg2.Timestamp(d.year, d.month, d.day, d.hour, d.minute, d.second)
 
     tstamps = map(lambda p: p.time, segment.points)
-    # TODO: timestamps
+
     cur.execute("""
             INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps)
-            VALUES (%s, %s, %s, %s, NULL, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING trip_id
             """,
             (   segment.location_from,
                 segment.location_to,
                 segment.points[0].time,
                 segment.points[-1].time,
-                #dbBounds(segment.getBounds()),
+                dbBounds(getBounds(segment)),
                 dbPoints(segment.points),
                 tstamps
                 ))
@@ -101,7 +162,6 @@ def insertSegment(cur, segment):
 
     return trip_id
 
-#def insertStay(cur, label, trip_id, date?):
 
 def connectDB():
     connectionString = 'dbname=tracemysteps user=PedroFrancisco host=localhost'
@@ -122,11 +182,11 @@ def load(gpx):
 			endPoint = ""
 			for point in segment.points:
 				label = life.where_when(point.time.strftime("%Y_%m_%d"), point.time.strftime("%H%M"))
-				if(startLabel == ""):
+				if(startLabel == "" and label is not None):
 					startLabel = label
 					setattr(segment, 'location_from', label)
 					setattr(segment, 'startPoint', point)
-				if(label != ""):
+				if(label != "" and label is not None):
 					endLabel = label
 					endPoint = point
 				print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
@@ -139,10 +199,10 @@ def load(gpx):
 			setattr(segment, 'location_to', endLabel)
 			setattr(segment, 'endPoint', endPoint)
 			insertSegment(cur, segment)
-
 	conn.commit()
 	cur.close()
 	conn.close()				
+
 
 
 life = Life("MyTracks.life")

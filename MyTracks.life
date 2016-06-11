@@ -75,7 +75,7 @@ UTC
 1000-1006: cais do sodre station
 1007-1017: cais do sodre station->saldanha station
 1018-1020: saldanha station
-1025-1050: IST-alameda
+1025-1050: IST alameda
 1055-1305: INESC
 1314-1335: atrium saldanha [lunch]
 1451-1744: INESC
@@ -128,7 +128,7 @@ UTC
 0958-1002: cais do sodre station
 1003-1021: cais do sodre station->saldanha station
 1022-1025: saldanha station
-1028-1758: IST-alameda {rnl}
+1028-1758: IST alameda {rnl}
 1804-1805: alameda station
 1806-1819: alameda station->cais do sodre station
 1820-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
@@ -213,12 +213,12 @@ UTC
 1325-1330: seixalinho station
 1400-1403: cais do sodre station
 1404-1420: cais do sodre station->alameda station
-1424-1510: IST-alameda
-1511-1540: IST-alameda->IST-taguspark
-1541-1710: IST-taguspark
-1711-1732: IST-taguspark->sete rios station
+1424-1510: IST alameda
+1511-1540: IST alameda->IST taguspark
+1541-1710: IST taguspark
+1711-1732: IST taguspark->sete rios station
 1733-1735: sete rios station
-1736-1747: sete rios station->baixa-chiado station
+1736-1747: sete rios station->baixa chiado station
 1755-1758: padaria portuguesa [snack] ;shop in rua do ouro
 1815-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
 1921-2359: home [dinner]
@@ -285,7 +285,7 @@ UTC
 1057-1104: cais do sodre station
 1105-1124: cais do sodre station->saldanha station
 1125-1126: saldanha station
-1130-1700: IST-alameda {rnl}
+1130-1700: IST alameda {rnl}
 1706-1708: alameda station
 1709-1720: alameda station->cais do sodre station
 1722-1730: cais do sodre station{Waiting for the boat trip back to Montijo}
@@ -296,9 +296,9 @@ UTC
 0857-0902: seixalinho station
 0930-0935: cais do sodre station
 0936-0945: cais do sodre station->alameda station
-1010-1042: IST-alameda->IST-taguspark
-1043-1710: IST-taguspark
-1711-1733: IST-taguspark->sete rios staion
+1010-1042: IST alameda->IST taguspark
+1043-1710: IST taguspark
+1711-1733: IST taguspark->sete rios staion
 1735-1738: sete rios station
 1739-1755: sete rios station->cais do sodre station
 1757-1830: cais do sodre station{Waiting for the boat trip back to Montijo}
