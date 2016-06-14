@@ -60,8 +60,3 @@ CREATE TABLE IF NOT EXISTS stays (
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
   -- cada linha de um LIFE e uma stay
 );
-
---INSERT INTO trips (trip_id) VALUES (1);
---INSERT INTO trips_transportation_modes (trip_id, label, start_date, end_date, start_index, end_index, bounds) VALUES (1, 'exemplo', '2015-10-19 10:23:54',
---'2015-10-19 19:23:54', 10, 11, ST_GeomFromText('POLYGON Z((398000.0 7542000.0 279.9, 398000.0 7541990.0 281.0, 398010.0 7541990.0 280.4, 398010.0 7542000.0 279.4, 398000.0 7542000.0 279.9))', 4326));
-
