@@ -66,6 +66,7 @@ def getTrackBounds(track):
         return minLat, minLon, maxLat, maxLon
 
 def insertLocation(cur, label, point):
+    print label
     cur.execute("""
             SELECT label, centroid, point_cluster
             FROM locations
@@ -119,7 +120,7 @@ def insertTransportationMode(cur, tmode, trip_id, segment):
 
 def insertTrip(cur, trip):
     for segment in trip.segments:
-        insertSegment(segment)
+        insertSegment(cur, segment)
 
     # TODO
     # cur.execute("""
@@ -132,7 +133,6 @@ def insertTrip(cur, trip):
 
 
 def insertSegment(cur, segment):
-
     insertLocation(cur, segment.location_from, segment.startPoint)
     insertLocation(cur, segment.location_to, segment.endPoint)
 
@@ -140,7 +140,6 @@ def insertSegment(cur, segment):
         return psycopg2.Timestamp(d.year, d.month, d.day, d.hour, d.minute, d.second)
 
     tstamps = map(lambda p: p.time, segment.points)
-
     cur.execute("""
             INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -173,35 +172,35 @@ def connectDB():
 
 
 def load(gpx):
-	conn = connectDB()
-	cur = conn.cursor()
-	for track in gpx.tracks:
-		for segment in track.segments:
-			startLabel = ""
-			endLabel = ""
-			endPoint = ""
-			for point in segment.points:
-				label = life.where_when(point.time.strftime("%Y_%m_%d"), point.time.strftime("%H%M"))
-				if(startLabel == "" and label is not None):
-					startLabel = label
-					setattr(segment, 'location_from', label)
-					setattr(segment, 'startPoint', point)
-				if(label != "" and label is not None):
-					endLabel = label
-					endPoint = point
-				print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
-				if label is None or len(label) == 0:
-					print("No label TODO INSERT TRIP")
-				elif not isinstance(label, basestring):
-					print("TODO INSERT TRIP {0} {1}".format(label[0], label[1]))
-				else:
-					insertLocation(cur, label, point)
-			setattr(segment, 'location_to', endLabel)
-			setattr(segment, 'endPoint', endPoint)
-			insertSegment(cur, segment)
-	conn.commit()
-	cur.close()
-	conn.close()				
+    conn = connectDB()
+    cur = conn.cursor()
+    for track in gpx.tracks:
+        for segment in track.segments:
+            startLabel = ""
+            endLabel = ""
+            endPoint = ""
+            for point in segment.points:
+                label = life.where_when(point.time.strftime("%Y_%m_%d"), point.time.strftime("%H%M"))
+                if(startLabel == "" and label is not None and not isinstance(label, tuple)):
+                    startLabel = label
+                    setattr(segment, 'location_from', label)
+                    setattr(segment, 'startPoint', point)
+                if(label != "" and label is not None and not isinstance(label, tuple)):
+                    endLabel = label
+                    endPoint = point
+                print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
+                if label is None or len(label) == 0:
+                    print("No label")
+                elif isinstance(label, basestring):
+                    insertLocation(cur, label, point)
+                else:
+                    print("Label is not string. skipping")
+            setattr(segment, 'location_to', endLabel)
+            setattr(segment, 'endPoint', endPoint)
+        insertTrip(cur, track)
+    conn.commit()
+    cur.close()
+    conn.close()				
 
 
 
