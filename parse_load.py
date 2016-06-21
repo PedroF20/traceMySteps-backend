@@ -129,7 +129,9 @@ def insertTrip(cur, trip):
             # """, (trip_id, a))
 
 
-#def insertStay(cur, label, trip_id, date?):
+def insertStay(cur, trip_id, location_label, start_date, end_date):
+
+    return stay_id
 
 
 def insertSegment(cur, segment):
