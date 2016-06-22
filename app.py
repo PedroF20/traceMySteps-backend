@@ -1,4 +1,7 @@
 from os import getenv
+import argparse
+import json
+import subprocess
 import ppygis
 import psycopg2
 import psycopg2.extras
@@ -49,9 +52,22 @@ class Example(Resource):
         return jsonify ({'trip_id':MyList})
 
 
-class Hexbin_Data(Resource):
+class Hexbin_Places_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
+
+
+class Hexbin_Tracks_Data(Resource):
+  def get(self):
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class Calendar_Data(Resource):
@@ -61,46 +77,79 @@ class Calendar_Data(Resource):
 
 class Area_Gradient_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class GPS_Tracks(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class BarChart_Frequency_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class BarChart_TimeSpent_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class Chord_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class Arc_Edges_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class Arc_Nodes_Data(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 class Ranged_Bar(Resource):
   def get(self):
-    return
+        #Connect to databse
+        conn = connectDB()
+        cur = conn.cursor()
+        #Perform query and return JSON data
+        return
 
 
 api.add_resource(Example, '/example')
-api.add_resource(Hexbin_Data, '/hexbin')
+api.add_resource(Hexbin_Places_Data, '/hexbinPlaces')
+api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar')
 api.add_resource(Area_Gradient_Data, '/areagradient')
 api.add_resource(GPS_Tracks, '/gpstracks')
