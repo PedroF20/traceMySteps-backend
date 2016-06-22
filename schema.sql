@@ -14,20 +14,22 @@ CREATE TABLE IF NOT EXISTS locations (
   -- Point representative of the location
   centroid GEOGRAPHY(POINTZ, 4326) NOT NULL,
   -- Cluster of points that derived the location
-  point_cluster geography(LINESTRINGZ, 4326) NOT NULL
+  point_cluster geography(LINESTRINGZ, 4326) NOT NULL,
+  
+  visit_frequency INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS trips (
   trip_id SERIAL PRIMARY KEY,
 
-  start_location TEXT REFERENCES locations(label), -- erase NULL
-  end_location TEXT REFERENCES locations(label), -- erase NULL
+  start_location TEXT REFERENCES locations(label),
+  end_location TEXT REFERENCES locations(label),
 
-  start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, -- IS NOT NULL
-  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL, -- IS NOT NULL
+  start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
 
-  bounds geography(POLYGONZ, 4326) NOT NULL, -- IS NOT NULL
-  points geography(LINESTRINGZ, 4326) NOT NULL, -- IS NOT NULL
+  bounds geography(POLYGONZ, 4326) NOT NULL,
+  points geography(LINESTRINGZ, 4326) NOT NULL,
   -- LineString requires at least two positions.
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
 
@@ -57,6 +59,7 @@ CREATE TABLE IF NOT EXISTS stays (
   trip_id SERIAL REFERENCES trips(trip_id),
   location_label TEXT REFERENCES locations(label),
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
+  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  time_spent INTEGER NOT NULL
   -- cada linha de um LIFE e uma stay
 );
