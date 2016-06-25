@@ -5,8 +5,8 @@ import psycopg2
 import psycopg2.extras
 import gpxpy
 import gpxpy.gpx
+import datetime
 from life_source import Life
-from datetime import datetime, timedelta
 
 
 def dbPoint(point):
@@ -24,6 +24,7 @@ def dbBounds(bound):
                 ppygis.Point(bound[0], bound[3], 0, srid=4336),
                 ppygis.Point(bound[2], bound[1], 0, srid=4336),
                 ppygis.Point(bound[2], bound[3], 0, srid=4336)])]).write_ewkb()
+
 
 def getBounds(segment, lowerIndex = 0, upperIndex = -1):
         """Computes the bounds of the segment, or part of it
@@ -52,6 +53,7 @@ def getBounds(segment, lowerIndex = 0, upperIndex = -1):
 
         return (minLat, minLon, maxLat, maxLon)
 
+
 def getTrackBounds(track):
         minLat = float("inf")
         minLon = float("inf")
@@ -64,6 +66,25 @@ def getTrackBounds(track):
             maxLat = max(malat, maxLat)
             maxLon = max(malon, maxLon)
         return minLat, minLon, maxLat, maxLon
+
+
+def getStartTime(segment):
+    return segment.points[0].time
+
+
+def getTrackStartTime(track):
+    lastTime = None
+    for segment in track.segments:
+        if lastTime is None:
+            lastTime = getStartTime(segment)
+        elif lastTime > getStartTime(segment):
+            lastTime = getStartTime(segment)
+    return lastTime
+
+
+def getEndTime(segment):
+    return segment.points[-1].time
+
 
 def insertLocation(cur, label, point):
     print label
@@ -103,6 +124,7 @@ def insertLocation(cur, label, point):
         print label
 
 
+# Might not be using transportation modes
 def insertTransportationMode(cur, tmode, trip_id, segment):
     label = tmode['label']
     fro = tmode['from']
@@ -119,19 +141,43 @@ def insertTransportationMode(cur, tmode, trip_id, segment):
 
 
 def insertTrip(cur, trip):
+    ids = []
     for segment in trip.segments:
-        insertSegment(cur, segment)
+        ids.append(insertSegment(cur, segment))
 
-    # TODO
-    # cur.execute("""
-            # INSERT INTO stays(trip_id, location_label, start_date, end_date)
-            # VALUES (%s, %s, %s, %s)
-            # """, (trip_id, a))
+    insertStays(cur, trip, ids)
 
 
-def insertStay(cur, trip_id, location_label, start_date, end_date):
+def insertStays(cur, trip, ids):
+    def insert(trip_id, location, start_date, end_date):
+        cur.execute("""
+            INSERT INTO stays(trip_id, location_label, start_date, end_date)
+            VALUES (%s, %s, %s, %s)
+            RETURNING stay_id
+            """, (trip_id, location, start_date, end_date))
+        stay_id = cur.fetchone()
+        stay_id = stay_id[0]
+        return stay_id
 
-    return stay_id
+    for i, segment in enumerate(trip.segments):
+        trip_id = ids[i]
+        if i == 0:
+            # Start of the day
+            end_date = getStartTime(segment)
+            start_date = datetime.datetime(end_date.year, end_date.month, end_date.day)
+            location = segment.location_from
+        else:
+            start_date = getEndTime(trip.segments[i - 1])
+            end_date = getEndTime(segment)
+            location = segment.location_from
+
+        insert(trip_id, location, start_date, end_date)
+
+        if i == len(trip.segments) - 1:
+            location = segment.location_to
+            start_date = getEndTime(segment)
+            end_date = datetime.datetime(start_date.year, start_date.month, start_date.day, 0, 0, 0, 0)
+            insert(trip_id, location, start_date, end_date)
 
 
 def insertSegment(cur, segment):
@@ -203,7 +249,6 @@ def load(gpx):
     conn.commit()
     cur.close()
     conn.close()				
-
 
 
 life = Life("MyTracks.life")

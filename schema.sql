@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS locations (
   -- Point representative of the location
   centroid GEOGRAPHY(POINTZ, 4326) NOT NULL,
   -- Cluster of points that derived the location
-  point_cluster geography(LINESTRINGZ, 4326) NOT NULL,
+  point_cluster geography(LINESTRINGZ, 4326) NOT NULL
   
-  visit_frequency INTEGER NOT NULL
+  --visit_frequency INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS trips (
@@ -39,8 +39,20 @@ CREATE TABLE IF NOT EXISTS trips (
   -- para efeitos de load, cada track e uma trip
 );
 
+
+CREATE TABLE IF NOT EXISTS stays (
+  stay_id SERIAL PRIMARY KEY,
+  trip_id SERIAL REFERENCES trips(trip_id),
+  location_label TEXT REFERENCES locations(label),
+  start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
+  --time_spent INTEGER NOT NULL
+  -- cada linha de um LIFE e uma stay
+);
+
+
 CREATE TABLE IF NOT EXISTS trips_transportation_modes (
-  mode_id SERIAL PRIMARY KEY, -- String
+  mode_id TEXT PRIMARY KEY, -- String
   trip_id SERIAL REFERENCES trips(trip_id) NOT NULL,
 
   label TEXT NOT NULL,
@@ -52,14 +64,4 @@ CREATE TABLE IF NOT EXISTS trips_transportation_modes (
   start_index INTEGER NOT NULL,
   end_index INTEGER NOT NULL,
   bounds geography(POLYGONZ, 4326) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS stays (
-  stay_id SERIAL PRIMARY KEY,
-  trip_id SERIAL REFERENCES trips(trip_id),
-  location_label TEXT REFERENCES locations(label),
-  start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  time_spent INTEGER NOT NULL
-  -- cada linha de um LIFE e uma stay
 );

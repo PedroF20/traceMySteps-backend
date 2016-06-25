@@ -33,6 +33,15 @@ def after_request(response):
   return response
 
 
+# toJSON example
+
+# return {
+#         'points': map(lambda point: point.toJSON(), self.points),
+#         'transportationModes': self.transportation_modes,
+#         'locationFrom': self.location_from.toJSON() if self.location_from != None else None,
+#         'locationTo': self.location_to.toJSON() if self.location_to != None else None
+#         }
+
 @app.route("/")
 def Home():
 	return render_template("index.html")
