@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS locations (
   -- Point representative of the location
   centroid GEOGRAPHY(POINTZ, 4326) NOT NULL,
   -- Cluster of points that derived the location
-  point_cluster geography(LINESTRINGZ, 4326) NOT NULL
+  point_cluster geography(LINESTRINGZ, 4326) NOT NULL,
   
-  --visit_frequency INTEGER NOT NULL
+  visit_frequency INTEGER DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS trips (

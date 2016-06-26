@@ -102,12 +102,27 @@ def insertLocation(cur, label, point):
         # TODO
         #centroid = ST_Centroid(point_cluster)
         #point_cluster.points.append(ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326))
+        cur.execute("""
+            SELECT visit_frequency
+            FROM locations
+            WHERE label=%s
+            """, (label, ))
+        visit_frequency = cur.fetchone()
+        visit_frequency = visit_frequency[0]
+        print visit_frequency
+        visit_frequency += 1
 
         cur.execute("""
                 UPDATE locations
                 SET point_cluster=%s
                 WHERE label=%s
                 """, (point_cluster.write_ewkb(), label))
+
+        cur.execute("""
+                UPDATE locations
+                SET visit_frequency=%s
+                WHERE label=%s
+                """, (visit_frequency, label))
 
         #cur.execute("""
         #        UPDATE locations

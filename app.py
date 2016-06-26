@@ -42,6 +42,7 @@ def after_request(response):
 #         'locationTo': self.location_to.toJSON() if self.location_to != None else None
 #         }
 
+
 @app.route("/")
 def Home():
 	return render_template("index.html")
