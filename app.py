@@ -148,7 +148,7 @@ class Arc_Nodes_Data(Resource):
         return
 
 
-class Ranged_Bar(Resource):
+class Stays_Graph(Resource):
   def get(self):
         #Connect to databse
         conn = connectDB()
@@ -168,7 +168,7 @@ api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
 api.add_resource(Chord_Data, '/chord')
 api.add_resource(Arc_Edges_Data, '/arcedges')
 api.add_resource(Arc_Nodes_Data, '/arcnodes')
-api.add_resource(Ranged_Bar, '/rangedbar')
+api.add_resource(Ranged_Bar, '/staysgraph')
 
 
 if __name__ == '__main__':

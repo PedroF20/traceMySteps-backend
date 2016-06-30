@@ -42,7 +42,11 @@ CREATE TABLE IF NOT EXISTS trips (
 
 CREATE TABLE IF NOT EXISTS stays (
   stay_id SERIAL PRIMARY KEY,
-  trip_id SERIAL REFERENCES trips(trip_id),
+  trip_id SERIAL REFERENCES trips(trip_id), -- pode ser dispensavel isto aqui.
+  -- nao temos que necessariamente saber as viagens associadas as stays
+  -- pois as pessoas ao observarem as viagens vao lembrar se das localizacoes
+  -- e por conseguinte sabem que tiveram no sitio x e foram para o sitio y
+  -- essa associacao nao e importante aqui  
   location_label TEXT REFERENCES locations(label),
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL

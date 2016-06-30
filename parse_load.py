@@ -102,27 +102,12 @@ def insertLocation(cur, label, point):
         # TODO
         #centroid = ST_Centroid(point_cluster)
         #point_cluster.points.append(ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326))
-        cur.execute("""
-            SELECT visit_frequency
-            FROM locations
-            WHERE label=%s
-            """, (label, ))
-        visit_frequency = cur.fetchone()
-        visit_frequency = visit_frequency[0]
-        print visit_frequency
-        visit_frequency += 1
 
         cur.execute("""
                 UPDATE locations
                 SET point_cluster=%s
                 WHERE label=%s
                 """, (point_cluster.write_ewkb(), label))
-
-        cur.execute("""
-                UPDATE locations
-                SET visit_frequency=%s
-                WHERE label=%s
-                """, (visit_frequency, label))
 
         #cur.execute("""
         #        UPDATE locations
@@ -163,7 +148,7 @@ def insertTrip(cur, trip):
     insertStays(cur, trip, ids)
 
 
-def insertStays(cur, trip, ids):
+def insertStays(cur, trip, ids): # POSSO LER SÓ DO LIFE E APENAS INSERIR. CUIDADO COM TRIP ID
     def insert(trip_id, location, start_date, end_date):
         cur.execute("""
             INSERT INTO stays(trip_id, location_label, start_date, end_date)
@@ -219,6 +204,22 @@ def insertSegment(cur, segment):
     trip_id = cur.fetchone()
     trip_id = trip_id[0]
 
+    cur.execute("""
+            SELECT visit_frequency
+            FROM locations
+            WHERE label=%s
+            """, (segment.location_from, ))
+    visit_frequency = cur.fetchone()
+    visit_frequency = visit_frequency[0]
+    print visit_frequency
+    visit_frequency += 1
+
+    cur.execute("""
+        UPDATE locations
+        SET visit_frequency=%s
+        WHERE label=%s
+        """, (visit_frequency, segment.location_from))
+
     # for tmode in segment.transportation_modes:
     #     insertTransportationMode(cur, tmode, trip_id, segment)
 
@@ -265,6 +266,12 @@ def load(gpx):
     cur.close()
     conn.close()				
 
+
+# visit_frequency pode ser só lido do life: para cada nome de label, fazer parse ao life
+# e contar quantas vezes aparece essa label. colocar esse numero na BD.
+
+# time_spent on stays idem: para cada span (que indica uma stay e uma location)
+# faço a diferença entre horas (funçao length do life_source) e coloco na BD.
 
 life = Life("MyTracks.life")
 files_directory = 'MyTracks/'
