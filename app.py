@@ -121,13 +121,21 @@ class BarChart_TimeSpent_Data(Resource):
         return
 
 
+# MyList = list (dict(zip (tuple (query.keys()) ,i)) for i in query.cursor)
+#         return jsonify ({'date_price':MyList})
+
 class Chord_Data(Resource):
   def get(self):
         #Connect to databse
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
-        return
+        try:
+          cur.execute("select json_build_object('from', start_location, 'to', end_location) from trips")
+        except:
+          print("Error executing select")
+        FromList = list (i[0] for i in cur.fetchall())
+        return FromList
 
 
 class Arc_Edges_Data(Resource):
@@ -168,7 +176,7 @@ api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
 api.add_resource(Chord_Data, '/chord')
 api.add_resource(Arc_Edges_Data, '/arcedges')
 api.add_resource(Arc_Nodes_Data, '/arcnodes')
-api.add_resource(Ranged_Bar, '/staysgraph')
+api.add_resource(Stays_Graph, '/staysgraph')
 
 
 if __name__ == '__main__':

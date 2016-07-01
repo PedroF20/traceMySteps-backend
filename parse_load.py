@@ -147,8 +147,8 @@ def insertTrip(cur, trip):
 
     insertStays(cur, trip, ids)
 
-
-def insertStays(cur, trip, ids): # POSSO LER SÓ DO LIFE E APENAS INSERIR. CUIDADO COM TRIP ID
+# POSSO LER SO DO LIFE E APENAS INSERIR - CUIDADO COM TRIP ID
+def insertStays(cur, trip, ids): 
     def insert(trip_id, location, start_date, end_date):
         cur.execute("""
             INSERT INTO stays(trip_id, location_label, start_date, end_date)
@@ -267,11 +267,11 @@ def load(gpx):
     conn.close()				
 
 
-# visit_frequency pode ser só lido do life: para cada nome de label, fazer parse ao life
+# visit_frequency pode ser so lido do life: para cada nome de label, fazer parse ao life
 # e contar quantas vezes aparece essa label. colocar esse numero na BD.
 
 # time_spent on stays idem: para cada span (que indica uma stay e uma location)
-# faço a diferença entre horas (funçao length do life_source) e coloco na BD.
+# faco a diferenca entre horas (funcao length do life_source) e coloco na BD.
 
 life = Life("MyTracks.life")
 files_directory = 'MyTracks/'
