@@ -6,15 +6,37 @@ import psycopg2.extras
 import gpxpy
 import gpxpy.gpx
 import datetime
+import numpy as np
+import life_source
 from life_source import Life
+
+
+life = Life("MyTracks.life")
+files_directory = 'MyTracks/'
 
 
 def dbPoint(point):
     return ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326).write_ewkb()
 
 
+def pointsFromDb(gis_points):
+    gis_points = ppygis.Geometry.read_ewkb(gis_points).points
+    print gis_points
+    result = []
+    for i, point in enumerate(gis_points):
+        result.append(ppygis.Point(point.x, point.y, p.elevation, srid=4326))
+    return result
+
+
 def dbPoints(points):
     return ppygis.LineString(map(lambda p: ppygis.Point(p.latitude, p.longitude, p.elevation, srid=4326), points), 4326).write_ewkb()
+
+
+def computeCentroid(points):
+    xs = map(lambda p: p[0], points)
+    ys = map(lambda p: p[1], points)
+    centroid = [np.mean(xs), np.mean(ys)]
+    return centroid
 
 
 def dbBounds(bound):
@@ -96,24 +118,21 @@ def insertLocation(cur, label, point):
     if cur.rowcount > 0:
         # Updates current location set of points and centroid
         _, centroid, point_cluster = cur.fetchone()
-        #centroid = ppygis.Geometry.read_ewkb(centroid)
+        centroid = ppygis.Geometry.read_ewkb(centroid)
         point_cluster = ppygis.Geometry.read_ewkb(point_cluster)
+        point_cluster = pointsFromDb(point_cluster)
 
-        # TODO
-        #centroid = ST_Centroid(point_cluster)
+        centroid = computeCentroid(point_cluster)
+
+
         #point_cluster.points.append(ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326))
 
         cur.execute("""
                 UPDATE locations
-                SET point_cluster=%s
+                SET centroid=%s, point_cluster=%s
                 WHERE label=%s
-                """, (point_cluster.write_ewkb(), label))
+                """, (centroid.write_ewkb(), point_cluster.write_ewkb(), label))
 
-        #cur.execute("""
-        #        UPDATE locations
-        #        SET centroid=ST_Centroid(point_cluster::geometry)
-        #        WHERE label=%s
-        #        """, (label, ))
     else:
         # Creates new location
         print label
@@ -272,9 +291,6 @@ def load(gpx):
 
 # time_spent on stays idem: para cada span (que indica uma stay e uma location)
 # faco a diferenca entre horas (funcao length do life_source) e coloco na BD.
-
-life = Life("MyTracks.life")
-files_directory = 'MyTracks/'
 
 files =[]
 for f in os.listdir(files_directory):

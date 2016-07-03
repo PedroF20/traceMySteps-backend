@@ -48,20 +48,6 @@ def Home():
 	return render_template("index.html")
 
 
-class Example(Resource):
-    def get(self):
-        #Connect to databse
-        conn = connectDB()
-        cur = conn.cursor()
-        #Perform query and return JSON data
-        try:
-          cur.execute("select trip_id from trips")
-        except:
-          print("Error executing select")
-        MyList = list (i[0] for i in cur.fetchall())
-        return jsonify ({'trip_id':MyList})
-
-
 class Hexbin_Places_Data(Resource):
   def get(self):
         #Connect to databse
@@ -134,8 +120,8 @@ class Chord_Data(Resource):
           cur.execute("select json_build_object('from', start_location, 'to', end_location) from trips")
         except:
           print("Error executing select")
-        FromList = list (i[0] for i in cur.fetchall())
-        return FromList
+        ChordList = list (i[0] for i in cur.fetchall())
+        return ChordList
 
 
 class Arc_Edges_Data(Resource):
@@ -144,7 +130,12 @@ class Arc_Edges_Data(Resource):
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
-        return
+        try:
+          cur.execute("select json_build_object('source', start_location, 'target', end_location, 'frequency', TRIP_FREQUENCY) from trips")
+        except:
+          print("Error executing select")
+        ArcList = list (i[0] for i in cur.fetchall())
+        return ArcList
 
 
 class Arc_Nodes_Data(Resource):
@@ -153,7 +144,13 @@ class Arc_Nodes_Data(Resource):
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
-        return
+        try:
+          cur.execute("SELECT start_location FROM trips UNION SELECT end_location FROM trips")
+        except:
+          print("Error executing select")
+        nodes = [{'id': i[0]} for i in cur.fetchall()]
+        #NodeList = list (i[0] for i in cur.fetchall())
+        return nodes
 
 
 class Stays_Graph(Resource):
@@ -165,18 +162,17 @@ class Stays_Graph(Resource):
         return
 
 
-api.add_resource(Example, '/example')
-api.add_resource(Hexbin_Places_Data, '/hexbinPlaces')
-api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
-api.add_resource(Calendar_Data, '/calendar')
-api.add_resource(Area_Gradient_Data, '/areagradient')
-api.add_resource(GPS_Tracks, '/gpstracks')
-api.add_resource(BarChart_Frequency_Data, '/barchartFrequency')
-api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
-api.add_resource(Chord_Data, '/chord')
-api.add_resource(Arc_Edges_Data, '/arcedges')
-api.add_resource(Arc_Nodes_Data, '/arcnodes')
-api.add_resource(Stays_Graph, '/staysgraph')
+api.add_resource(Hexbin_Places_Data, '/hexbinPlaces') # LAST
+api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks') # LAST
+api.add_resource(Calendar_Data, '/calendar') # LAST
+api.add_resource(Area_Gradient_Data, '/areagradient') # NEXT
+api.add_resource(GPS_Tracks, '/gpstracks') # LAST
+api.add_resource(BarChart_Frequency_Data, '/barchartFrequency') # NEXT
+api.add_resource(BarChart_TimeSpent_Data, '/barchartTime') # NEXT
+api.add_resource(Chord_Data, '/chord') # DONE
+api.add_resource(Arc_Edges_Data, '/arcedges') # NEXT
+api.add_resource(Arc_Nodes_Data, '/arcnodes') # DONE
+api.add_resource(Stays_Graph, '/staysgraph') # LAST
 
 
 if __name__ == '__main__':
