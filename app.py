@@ -95,7 +95,12 @@ class BarChart_Frequency_Data(Resource):
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
-        return
+        try:
+          cur.execute("select json_build_object('label', label, 'value', visit_frequency) from locations")
+        except:
+          print("Error executing select")
+        FrequencyData = list (i[0] for i in cur.fetchall())
+        return FrequencyData
 
 
 class BarChart_TimeSpent_Data(Resource):
@@ -104,7 +109,12 @@ class BarChart_TimeSpent_Data(Resource):
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
-        return
+        try:
+          cur.execute("select json_build_object('label', location_label, 'value', time_spent) from stays")
+        except:
+          print("Error executing select")
+        TimeData = list (i[0] for i in cur.fetchall())
+        return TimeData
 
 
 # MyList = list (dict(zip (tuple (query.keys()) ,i)) for i in query.cursor)
@@ -149,7 +159,6 @@ class Arc_Nodes_Data(Resource):
         except:
           print("Error executing select")
         nodes = [{'id': i[0]} for i in cur.fetchall()]
-        #NodeList = list (i[0] for i in cur.fetchall())
         return nodes
 
 
@@ -167,11 +176,11 @@ api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks') # LAST
 api.add_resource(Calendar_Data, '/calendar') # LAST
 api.add_resource(Area_Gradient_Data, '/areagradient') # NEXT
 api.add_resource(GPS_Tracks, '/gpstracks') # LAST
-api.add_resource(BarChart_Frequency_Data, '/barchartFrequency') # NEXT
-api.add_resource(BarChart_TimeSpent_Data, '/barchartTime') # NEXT
-api.add_resource(Chord_Data, '/chord') # DONE
+api.add_resource(BarChart_Frequency_Data, '/barchartFrequency')
+api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
+api.add_resource(Chord_Data, '/chord')
 api.add_resource(Arc_Edges_Data, '/arcedges') # NEXT
-api.add_resource(Arc_Nodes_Data, '/arcnodes') # DONE
+api.add_resource(Arc_Nodes_Data, '/arcnodes')
 api.add_resource(Stays_Graph, '/staysgraph') # LAST
 
 
