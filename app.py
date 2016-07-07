@@ -5,6 +5,8 @@ import subprocess
 import ppygis
 import psycopg2
 import psycopg2.extras
+from life_source import Life
+from life_source import Day
 from flask import Response, Flask, request, abort, render_template
 from flask import jsonify
 from datetime import datetime
@@ -14,6 +16,9 @@ from json import dumps
 
 app = Flask(__name__)
 api = Api(app)
+
+
+life = Life("MyTracks.life")
 
 
 def connectDB():
@@ -73,11 +78,14 @@ class Calendar_Data(Resource):
 
 class Area_Gradient_Data(Resource):
   def get(self):
-        #Connect to databse
-        conn = connectDB()
-        cur = conn.cursor()
-        #Perform query and return JSON data
-        return
+    result = []
+    for day in life.days:
+      d = {
+        'date' : day.date,
+        'price': day.moving()
+      }
+      result.append(d)
+    return result
 
 
 class GPS_Tracks(Resource):
@@ -111,6 +119,7 @@ class BarChart_TimeSpent_Data(Resource):
         #Perform query and return JSON data
         try:
           cur.execute("select json_build_object('label', location_label, 'value', time_spent) from stays")
+          # function total_at in the life_source file is important for time_spent
         except:
           print("Error executing select")
         TimeData = list (i[0] for i in cur.fetchall())

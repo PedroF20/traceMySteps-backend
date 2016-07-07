@@ -65,3 +65,5 @@ target/
 postgres_commands.rtf
 
 *.gpx
+
+test.py
