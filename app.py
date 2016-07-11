@@ -1,10 +1,13 @@
 from os import getenv
 import argparse
+import os
 import json
 import subprocess
 import ppygis
 import psycopg2
 import psycopg2.extras
+import gpxpy
+import gpxpy.gpx
 from life_source import Life
 from life_source import Day
 from flask import Response, Flask, request, abort, render_template
@@ -18,8 +21,40 @@ app = Flask(__name__)
 api = Api(app)
 
 
-life = Life("MyTracks.life")
+############################################################################
+################  LIFE and tracks direct manipulation  #####################
+############################################################################
 
+life = Life("MyTracks.life")
+files_directory = 'MyTracks/'
+
+
+def loadLatLon(gpx, vector):
+  for track in gpx.tracks:
+    for segment in track.segments:
+      for point in segment.points:
+        print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
+        vector.append([point.longitude, point.latitude])
+
+
+result = []
+files =[]
+for f in os.listdir(files_directory):
+    files.append(f)
+files.sort()
+
+for f in files:
+  if f.endswith(".gpx"):
+    filename = os.path.join(files_directory, f)
+    print filename
+    gpx_file = open(filename, 'r')
+    tracks = gpxpy.parse(gpx_file)
+    loadLatLon(tracks, result)
+
+
+############################################################################
+################ Database connection and operations ########################
+############################################################################
 
 def connectDB():
     connectionString = 'dbname=tracemysteps user=PedroFrancisco host=localhost'
@@ -64,11 +99,7 @@ class Hexbin_Places_Data(Resource):
 
 class Hexbin_Tracks_Data(Resource):
   def get(self):
-        #Connect to databse
-        conn = connectDB()
-        cur = conn.cursor()
-        #Perform query and return JSON data
-        return
+        return result
 
 
 class Calendar_Data(Resource):
@@ -179,6 +210,10 @@ class Stays_Graph(Resource):
         #Perform query and return JSON data
         return
 
+
+############################################################################
+######################### Endpoints and run ################################
+############################################################################
 
 api.add_resource(Hexbin_Places_Data, '/hexbinPlaces') # LAST  se no json aparecer a mesma lat/lon repetida (frequencia) 
                                                       #       para as localizacoes das stays, o hexbin escurece mais
