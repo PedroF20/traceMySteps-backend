@@ -12,9 +12,9 @@ DROP TABLE IF EXISTS trips_transportation_modes CASCADE;
 CREATE TABLE IF NOT EXISTS locations (
   label TEXT PRIMARY KEY,
   -- Point representative of the location
-  centroid GEOGRAPHY(POINTZ, 4326) NOT NULL,
+  centroid GEOGRAPHY(POINTZ, 4326) NULL,
   -- Cluster of points that derived the location
-  point_cluster geography(LINESTRINGZ, 4326) NOT NULL,
+  point_cluster geography(LINESTRINGZ, 4326) NULL,
   
   visit_frequency INTEGER DEFAULT 1
 );
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS trips (
 
 CREATE TABLE IF NOT EXISTS stays (
   stay_id SERIAL PRIMARY KEY,
-  trip_id SERIAL REFERENCES trips(trip_id), -- pode ser dispensavel isto aqui.
+  trip_id INTEGER REFERENCES trips(trip_id) NULL, -- pode ser dispensavel isto aqui.
   -- nao temos que necessariamente saber as viagens associadas as stays
   -- pois as pessoas ao observarem as viagens vao lembrar se das localizacoes
   -- e por conseguinte sabem que tiveram no sitio x e foram para o sitio y
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS stays (
 
 CREATE TABLE IF NOT EXISTS trips_transportation_modes (
   mode_id TEXT PRIMARY KEY, -- String
-  trip_id SERIAL REFERENCES trips(trip_id) NOT NULL,
+  trip_id INTEGER REFERENCES trips(trip_id) NOT NULL,
 
   label TEXT NOT NULL,
 

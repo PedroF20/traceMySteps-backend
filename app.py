@@ -217,7 +217,7 @@ class Stays_Graph(Resource):
 
 api.add_resource(Hexbin_Places_Data, '/hexbinPlaces') # LAST  se no json aparecer a mesma lat/lon repetida (frequencia) 
                                                       #       para as localizacoes das stays, o hexbin escurece mais
-api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks') # LAST  ler aqui pasta das tracks e enviar json com conjunto de lat/lon
+api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar') # LAST
 api.add_resource(Area_Gradient_Data, '/areagradient')
 api.add_resource(GPS_Tracks, '/gpstracks') # LAST

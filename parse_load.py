@@ -6,6 +6,7 @@ import psycopg2.extras
 import gpxpy
 import gpxpy.gpx
 import datetime
+import life_source
 import numpy as np
 import life_source
 from life_source import Life
@@ -15,16 +16,25 @@ life = Life("MyTracks.life")
 files_directory = 'MyTracks/'
 
 
+def load_from_life(cur):
+    # Insert stays
+    for day in life.days:
+        date = day.date
+        for span in day.spans:
+            start = datetime.datetime.strptime("%s %s" % (date, life_source.minutes_to_military(span.start)), "%Y_%m_%d %H%M")
+            end = datetime.datetime.strptime("%s %s" % (date, life_source.minutes_to_military(span.end)), "%Y_%m_%d %H%M")
+            if type(span.place) is str:
+                insertLocation(cur, span.place, None)
+                insertStay(cur, span.place, start, end)
+
 def dbPoint(point):
     return ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326).write_ewkb()
 
 
 def pointsFromDb(gis_points):
-    gis_points = ppygis.Geometry.read_ewkb(gis_points).points
-    print gis_points
     result = []
-    for i, point in enumerate(gis_points):
-        result.append(ppygis.Point(point.x, point.y, p.elevation, srid=4326))
+    for point in gis_points.points:
+        result.append(ppygis.Point(point.x, point.y, point.z, srid=4326))
     return result
 
 
@@ -33,9 +43,9 @@ def dbPoints(points):
 
 
 def computeCentroid(points):
-    xs = map(lambda p: p[0], points)
-    ys = map(lambda p: p[1], points)
-    centroid = [np.mean(xs), np.mean(ys)]
+    xs = map(lambda p: p.x, points)
+    ys = map(lambda p: p.y, points)
+    centroid = ppygis.Point(np.mean(xs), np.mean(ys), 0, srid=4326)
     return centroid
 
 
@@ -115,31 +125,35 @@ def insertLocation(cur, label, point):
             FROM locations
             WHERE label=%s
             """, (label, ))
-    if cur.rowcount > 0:
+    if cur.rowcount > 0  and point is None:
+        # ignore
+        print "ignore"
+    elif cur.rowcount > 0:
         # Updates current location set of points and centroid
         _, centroid, point_cluster = cur.fetchone()
-        centroid = ppygis.Geometry.read_ewkb(centroid)
         point_cluster = ppygis.Geometry.read_ewkb(point_cluster)
-        point_cluster = pointsFromDb(point_cluster)
 
-        centroid = computeCentroid(point_cluster)
+        if point_cluster is not None:
+            centroid = computeCentroid(pointsFromDb(point_cluster))
 
-
-        #point_cluster.points.append(ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326))
-
-        cur.execute("""
-                UPDATE locations
-                SET centroid=%s, point_cluster=%s
-                WHERE label=%s
-                """, (centroid.write_ewkb(), point_cluster.write_ewkb(), label))
-
+            cur.execute("""
+                    UPDATE locations
+                    SET centroid=%s, point_cluster=%s
+                    WHERE label=%s
+                    """, (centroid.write_ewkb(), point_cluster.write_ewkb(), label))
     else:
         # Creates new location
         print label
-        cur.execute("""
-                INSERT INTO locations (label, centroid, point_cluster)
-                VALUES (%s, %s, %s)
-                """, (label, dbPoint(point), dbPoints([point])))
+        if(point is not None):
+            cur.execute("""
+                    INSERT INTO locations (label, centroid, point_cluster)
+                    VALUES (%s, %s, %s)
+                    """, (label, dbPoint(point), dbPoints([point])))
+        else:
+            cur.execute("""
+                    INSERT INTO locations (label)
+                    VALUES (%s)
+                    """, (label, ))
         print label
 
 
@@ -164,39 +178,14 @@ def insertTrip(cur, trip):
     for segment in trip.segments:
         ids.append(insertSegment(cur, segment))
 
-    insertStays(cur, trip, ids)
+    # insertStays(cur, trip, ids)
 
-# POSSO LER SO DO LIFE E APENAS INSERIR - CUIDADO COM TRIP ID
-def insertStays(cur, trip, ids): 
-    def insert(trip_id, location, start_date, end_date):
-        cur.execute("""
-            INSERT INTO stays(trip_id, location_label, start_date, end_date)
-            VALUES (%s, %s, %s, %s)
-            RETURNING stay_id
-            """, (trip_id, location, start_date, end_date))
-        stay_id = cur.fetchone()
-        stay_id = stay_id[0]
-        return stay_id
 
-    for i, segment in enumerate(trip.segments):
-        trip_id = ids[i]
-        if i == 0:
-            # Start of the day
-            end_date = getStartTime(segment)
-            start_date = datetime.datetime(end_date.year, end_date.month, end_date.day)
-            location = segment.location_from
-        else:
-            start_date = getEndTime(trip.segments[i - 1])
-            end_date = getEndTime(segment)
-            location = segment.location_from
-
-        insert(trip_id, location, start_date, end_date)
-
-        if i == len(trip.segments) - 1:
-            location = segment.location_to
-            start_date = getEndTime(segment)
-            end_date = datetime.datetime(start_date.year, start_date.month, start_date.day, 0, 0, 0, 0)
-            insert(trip_id, location, start_date, end_date)
+def insertStay(cur, label, start_date, end_date):
+      cur.execute("""
+          INSERT INTO stays(location_label, start_date, end_date)
+          VALUES (%s, %s, %s)
+          """, (label, start_date, end_date))
 
 
 def insertSegment(cur, segment):
@@ -281,6 +270,7 @@ def load(gpx):
             setattr(segment, 'location_to', endLabel)
             setattr(segment, 'endPoint', endPoint)
         insertTrip(cur, track)
+    load_from_life(cur)
     conn.commit()
     cur.close()
     conn.close()				
