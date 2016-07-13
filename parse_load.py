@@ -144,7 +144,10 @@ def insertLocation(cur, label, point):
     else:
         # Creates new location
         print label
-        if(point is not None):
+        if label == "":
+            # ignore
+            print "ignore label vazia"
+        elif(point is not None):
             cur.execute("""
                     INSERT INTO locations (label, centroid, point_cluster)
                     VALUES (%s, %s, %s)
@@ -182,10 +185,11 @@ def insertTrip(cur, trip):
 
 
 def insertStay(cur, label, start_date, end_date):
-      cur.execute("""
-          INSERT INTO stays(location_label, start_date, end_date)
-          VALUES (%s, %s, %s)
-          """, (label, start_date, end_date))
+    if label != "":
+        cur.execute("""
+            INSERT INTO stays(location_label, start_date, end_date)
+            VALUES (%s, %s, %s)
+            """, (label, start_date, end_date))
 
 
 def insertSegment(cur, segment):
@@ -270,7 +274,6 @@ def load(gpx):
             setattr(segment, 'location_to', endLabel)
             setattr(segment, 'endPoint', endPoint)
         insertTrip(cur, track)
-    load_from_life(cur)
     conn.commit()
     cur.close()
     conn.close()				
@@ -294,3 +297,10 @@ for f in files:
 		gpx_file = open(filename, 'r')
 		tracks = gpxpy.parse(gpx_file)
 		load(tracks)
+# load life
+conn = connectDB()
+cur = conn.cursor()
+load_from_life(cur)
+conn.commit()
+cur.close()
+conn.close()
