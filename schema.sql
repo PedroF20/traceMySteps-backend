@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS stays (
   -- essa associacao nao e importante aqui  
   location_label TEXT REFERENCES locations(label),
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
-  --time_spent INTEGER NOT NULL
+  end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  time_spent INTEGER NOT NULL
   -- cada linha de um LIFE e uma stay
 );
 

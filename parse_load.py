@@ -21,11 +21,13 @@ def load_from_life(cur):
     for day in life.days:
         date = day.date
         for span in day.spans:
+            time_spent = span.length()
+            print time_spent
             start = datetime.datetime.strptime("%s %s" % (date, life_source.minutes_to_military(span.start)), "%Y_%m_%d %H%M")
             end = datetime.datetime.strptime("%s %s" % (date, life_source.minutes_to_military(span.end)), "%Y_%m_%d %H%M")
             if type(span.place) is str:
                 insertLocation(cur, span.place, None)
-                insertStay(cur, span.place, start, end)
+                insertStay(cur, span.place, start, end, time_spent)
 
 def dbPoint(point):
     return ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326).write_ewkb()
@@ -184,12 +186,12 @@ def insertTrip(cur, trip):
     # insertStays(cur, trip, ids)
 
 
-def insertStay(cur, label, start_date, end_date):
+def insertStay(cur, label, start_date, end_date, time_spent):
     if label != "":
         cur.execute("""
-            INSERT INTO stays(location_label, start_date, end_date)
-            VALUES (%s, %s, %s)
-            """, (label, start_date, end_date))
+            INSERT INTO stays(location_label, start_date, end_date, time_spent)
+            VALUES (%s, %s, %s, %s)
+            """, (label, start_date, end_date, time_spent))
 
 
 def insertSegment(cur, segment):
@@ -281,9 +283,6 @@ def load(gpx):
 
 # visit_frequency pode ser so lido do life: para cada nome de label, fazer parse ao life
 # e contar quantas vezes aparece essa label. colocar esse numero na BD.
-
-# time_spent on stays idem: para cada span (que indica uma stay e uma location)
-# faco a diferenca entre horas (funcao length do life_source) e coloco na BD.
 
 files =[]
 for f in os.listdir(files_directory):

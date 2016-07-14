@@ -150,7 +150,6 @@ class BarChart_TimeSpent_Data(Resource):
         #Perform query and return JSON data
         try:
           cur.execute("select json_build_object('label', location_label, 'value', time_spent) from stays")
-          # function total_at in the life_source file is important for time_spent
         except:
           print("Error executing select")
         TimeData = list (i[0] for i in cur.fetchall())
