@@ -99,7 +99,7 @@
 1820-2359: paulo's house
 
 --2016_01_31
-0000-1300: paulo's house{paulo}
+0000-1300: paulo's house
 1515-1534: massama train station {waiting for the train back to Lisbon}
 1535-1606: massama train station->rossio train station
 1609-1611: rossio station
@@ -199,8 +199,8 @@
 0959-1004: cais do sodre station
 1005-1024: cais do sodre station->saldanha station
 1024-1026: saldanha station
-1029-1332: INESC [lunch]
-1342-1403: atrium saldanha [lunch] {como n parei a track, da uma trip estranha}
+1029-1332: INESC
+1342-1403: atrium saldanha [lunch] ;como n parei a track, da uma trip estranha
 1422-1754: INESC
 1804-1806: alameda station
 1807-1821: alameda station->cais do sodre station

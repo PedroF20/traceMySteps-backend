@@ -145,21 +145,21 @@ def insertLocation(cur, label, point):
                     """, (centroid.write_ewkb(), point_cluster.write_ewkb(), label))
     else:
         # Creates new location
-        print label
         if label == "":
             # ignore
             print "ignore label vazia"
         elif(point is not None):
+            visit_frequency = len(life.when_at(label))
+            print visit_frequency
             cur.execute("""
-                    INSERT INTO locations (label, centroid, point_cluster)
-                    VALUES (%s, %s, %s)
-                    """, (label, dbPoint(point), dbPoints([point])))
+                    INSERT INTO locations (label, centroid, point_cluster, visit_frequency)
+                    VALUES (%s, %s, %s, %s)
+                    """, (label, dbPoint(point), dbPoints([point]), visit_frequency))
         else:
             cur.execute("""
                     INSERT INTO locations (label)
                     VALUES (%s)
                     """, (label, ))
-        print label
 
 
 # Might not be using transportation modes
@@ -218,21 +218,21 @@ def insertSegment(cur, segment):
     trip_id = cur.fetchone()
     trip_id = trip_id[0]
 
-    cur.execute("""
-            SELECT visit_frequency
-            FROM locations
-            WHERE label=%s
-            """, (segment.location_from, ))
-    visit_frequency = cur.fetchone()
-    visit_frequency = visit_frequency[0]
-    print visit_frequency
-    visit_frequency += 1
+    # cur.execute("""
+    #         SELECT visit_frequency
+    #         FROM locations
+    #         WHERE label=%s
+    #         """, (segment.location_from, ))
+    # visit_frequency = cur.fetchone()
+    # visit_frequency = visit_frequency[0]
+    # print visit_frequency
+    # visit_frequency += 1
 
-    cur.execute("""
-        UPDATE locations
-        SET visit_frequency=%s
-        WHERE label=%s
-        """, (visit_frequency, segment.location_from))
+    # cur.execute("""
+    #     UPDATE locations
+    #     SET visit_frequency=%s
+    #     WHERE label=%s
+    #     """, (visit_frequency, segment.location_from))
 
     # for tmode in segment.transportation_modes:
     #     insertTransportationMode(cur, tmode, trip_id, segment)
@@ -280,9 +280,6 @@ def load(gpx):
     cur.close()
     conn.close()				
 
-
-# visit_frequency pode ser so lido do life: para cada nome de label, fazer parse ao life
-# e contar quantas vezes aparece essa label. colocar esse numero na BD.
 
 files =[]
 for f in os.listdir(files_directory):
