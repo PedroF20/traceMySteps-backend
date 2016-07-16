@@ -1,4 +1,5 @@
 from os import getenv
+import collections
 import argparse
 import os
 import json
@@ -180,11 +181,23 @@ class Arc_Edges_Data(Resource):
         cur = conn.cursor()
         #Perform query and return JSON data
         try:
-          cur.execute("select json_build_object('source', start_location, 'target', end_location, 'frequency', TRIP_FREQUENCY) from trips")
+          cur.execute("select json_build_object('source', start_location, 'target', end_location, 'frequency', 1) from trips")
         except:
           print("Error executing select")
         ArcList = list (i[0] for i in cur.fetchall())
-        return ArcList
+        counter = collections.Counter()
+        for datum in ArcList:
+          if (datum['source'] == datum['target']):
+            # Ignore trips with the same source and target
+            pass
+          else:
+            counter[(datum['source'], datum['target'])] += datum['frequency']
+        processed_ArcList = [{
+            'source': k[0],
+            'target': k[1],
+            'frequency': v,
+        } for k, v in counter.items()]
+        return processed_ArcList
 
 
 class Arc_Nodes_Data(Resource):
