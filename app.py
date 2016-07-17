@@ -223,6 +223,24 @@ class Stays_Graph(Resource):
         return
 
 
+class Slider_Min_Date(Resource):
+  def get(self):
+        result = []
+        for day in life.days:
+          d = day.date
+          result.append(d)
+        return result[0]
+
+
+class Slider_Max_Date(Resource):
+  def get(self):
+        result = []
+        for day in life.days:
+          d = day.date
+          result.append(d)
+        return result[-1]
+
+
 ############################################################################
 ######################### Endpoints and run ################################
 ############################################################################
@@ -236,9 +254,11 @@ api.add_resource(GPS_Tracks, '/gpstracks') # LAST
 api.add_resource(BarChart_Frequency_Data, '/barchartFrequency')
 api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
 api.add_resource(Chord_Data, '/chord')
-api.add_resource(Arc_Edges_Data, '/arcedges') # NEXT
+api.add_resource(Arc_Edges_Data, '/arcedges')
 api.add_resource(Arc_Nodes_Data, '/arcnodes')
 api.add_resource(Stays_Graph, '/staysgraph') # LAST
+api.add_resource(Slider_Min_Date, '/slidermin')
+api.add_resource(Slider_Max_Date, '/slidermax')
 
 
 if __name__ == '__main__':
