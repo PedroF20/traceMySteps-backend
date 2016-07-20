@@ -169,9 +169,6 @@ class BarChart_TimeSpent_Data(Resource):
         return TimeData
 
 
-# MyList = list (dict(zip (tuple (query.keys()) ,i)) for i in query.cursor)
-#         return jsonify ({'date_price':MyList})
-
 class Chord_Data(Resource):
   def get(self):
         #Connect to databse
@@ -276,13 +273,7 @@ class Slider_Max_Date(Resource):
 ######################### Endpoints and run ################################
 ############################################################################
 
-api.add_resource(Hexbin_Places_Data, '/hexbinPlaces') # LAST  se no json aparecer a mesma lat/lon repetida (frequencia) 
-                                                      #       para as localizacoes das stays, o hexbin escurece mais
-                                                      # JOIN locations com stays, seleccionar o centroid de cada label
-                                                      # e colocar no vector de resultado o numero de copias dessas coordenadas
-                                                      # correspondente ao numero de stays nesse sitio
-                                                      # ex: 8 stays no inesc, 8 vezes que aparecem as coordenadas do inesc
-                                                      # no vector de resultados
+api.add_resource(Hexbin_Places_Data, '/hexbinPlaces')
 api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar') # LAST
 api.add_resource(Area_Gradient_Data, '/areagradient')
