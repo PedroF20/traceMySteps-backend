@@ -35,6 +35,7 @@ def loadLatLon(gpx, vector):
     for segment in track.segments:
       for point in segment.points:
         print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
+        # Hexbin library works with (lon, lat) instead of (lat, lon)
         vector.append([point.longitude, point.latitude])
 
 
@@ -95,7 +96,18 @@ class Hexbin_Places_Data(Resource):
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
-        return
+        try:
+          #Centroids cannot be null, we need them to show the coordinates
+          cur.execute("SELECT ST_X(centroid::geometry), ST_Y(centroid::geometry), visit_frequency FROM locations WHERE centroid NOTNULL")
+        except:
+          print("Error executing select")
+        response = cur.fetchall()
+        array = []
+        for datum in response:
+          for _ in range(datum[2]):
+            # Hexbin library works with (lon, lat) instead of (lat, lon)
+            array.append([datum[1], datum[0]])
+        return array
 
 
 class Hexbin_Tracks_Data(Resource):
@@ -220,8 +232,27 @@ class Stays_Graph(Resource):
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
+        try:
+          # For each row of the stays table, construct a response
+          # as shown below and return the JSON with the set of
+          # responses. If a stay uses more than a one-hour block,
+          # multiply the same response for each of the hours,
+          # adjusting the time_spent on each one
+          cur.execute("SELECT location_label FROM stays")
+        except:
+          print("Error executing select")
         return
 
+
+# {  
+#   day:2, // day 1: sunday, day 2: monday, etc.
+#   hour:1, // // 1-1 ate 1-1.59 -> corresponde ao intervalo 0 ate 0.59
+#   // "primeira hora do dia" - fazer esta associacao no backend
+#   // ex: if 00<=hour<=00.59 -> hour=1
+#   time_spent:57,// in minutes - maximo de 60 pois o bloco e de 1 hr
+#   label: "home" // sitio onde aconteceu a stay ou a stay "mais importante"
+#   // no caso de haver varias stays para um bloco, mostrar a maior
+# }
 
 class Slider_Min_Date(Resource):
   def get(self):
@@ -247,6 +278,11 @@ class Slider_Max_Date(Resource):
 
 api.add_resource(Hexbin_Places_Data, '/hexbinPlaces') # LAST  se no json aparecer a mesma lat/lon repetida (frequencia) 
                                                       #       para as localizacoes das stays, o hexbin escurece mais
+                                                      # JOIN locations com stays, seleccionar o centroid de cada label
+                                                      # e colocar no vector de resultado o numero de copias dessas coordenadas
+                                                      # correspondente ao numero de stays nesse sitio
+                                                      # ex: 8 stays no inesc, 8 vezes que aparecem as coordenadas do inesc
+                                                      # no vector de resultados
 api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar') # LAST
 api.add_resource(Area_Gradient_Data, '/areagradient')
