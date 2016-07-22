@@ -218,25 +218,6 @@ def insertSegment(cur, segment):
     trip_id = cur.fetchone()
     trip_id = trip_id[0]
 
-    # cur.execute("""
-    #         SELECT visit_frequency
-    #         FROM locations
-    #         WHERE label=%s
-    #         """, (segment.location_from, ))
-    # visit_frequency = cur.fetchone()
-    # visit_frequency = visit_frequency[0]
-    # print visit_frequency
-    # visit_frequency += 1
-
-    # cur.execute("""
-    #     UPDATE locations
-    #     SET visit_frequency=%s
-    #     WHERE label=%s
-    #     """, (visit_frequency, segment.location_from))
-
-    # for tmode in segment.transportation_modes:
-    #     insertTransportationMode(cur, tmode, trip_id, segment)
-
     return trip_id
 
 

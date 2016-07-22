@@ -1,6 +1,7 @@
 from os import getenv
 import collections
 import argparse
+import itertools
 import os
 import json
 import subprocess
@@ -30,28 +31,28 @@ life = Life("MyTracks.life")
 files_directory = 'MyTracks/'
 
 
-def loadLatLon(gpx, vector):
-  for track in gpx.tracks:
-    for segment in track.segments:
-      for point in segment.points:
-        print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
-        # Hexbin library works with (lon, lat) instead of (lat, lon)
-        vector.append([point.longitude, point.latitude])
+# def loadLatLon(gpx, vector):
+#   for track in gpx.tracks:
+#     for segment in track.segments:
+#       for point in segment.points:
+#         print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
+#         # Hexbin library works with (lon, lat) instead of (lat, lon)
+#         vector.append([point.longitude, point.latitude])
 
 
-result = []
-files =[]
-for f in os.listdir(files_directory):
-    files.append(f)
-files.sort()
+# result = []
+# files =[]
+# for f in os.listdir(files_directory):
+#     files.append(f)
+# files.sort()
 
-for f in files:
-  if f.endswith(".gpx"):
-    filename = os.path.join(files_directory, f)
-    print filename
-    gpx_file = open(filename, 'r')
-    tracks = gpxpy.parse(gpx_file)
-    loadLatLon(tracks, result)
+# for f in files:
+#   if f.endswith(".gpx"):
+#     filename = os.path.join(files_directory, f)
+#     print filename
+#     gpx_file = open(filename, 'r')
+#     tracks = gpxpy.parse(gpx_file)
+#     loadLatLon(tracks, result)
 
 
 ############################################################################
@@ -73,16 +74,6 @@ def after_request(response):
   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   return response
-
-
-# toJSON example
-
-# return {
-#         'points': map(lambda point: point.toJSON(), self.points),
-#         'transportationModes': self.transportation_modes,
-#         'locationFrom': self.location_from.toJSON() if self.location_from != None else None,
-#         'locationTo': self.location_to.toJSON() if self.location_to != None else None
-#         }
 
 
 @app.route("/")
@@ -225,21 +216,33 @@ class Arc_Nodes_Data(Resource):
 
 class Stays_Graph(Resource):
   def get(self):
+        result = []
         #Connect to databse
         conn = connectDB()
         cur = conn.cursor()
         #Perform query and return JSON data
         try:
-          # For each row of the stays table, construct a response
-          # as shown below and return the JSON with the set of
-          # responses. If a stay uses more than a one-hour block,
-          # multiply the same response for each of the hours,
-          # adjusting the time_spent on each one
-          cur.execute("SELECT location_label FROM stays")
+          cur.execute("SELECT EXTRACT (DOW FROM start_date) from stays")
         except:
           print("Error executing select")
-        return
+        day_of_week = cur.fetchall()
+        try:
+          cur.execute("SELECT location_label from stays")
+        except:
+          print("Error executing select")
+        locations = cur.fetchall()
+        for dow_datum, location_datum in itertools.izip_longest(day_of_week, locations):
+          d = {
+            'day' : dow_datum,
+            'label': location_datum
+          }
+          result.append(d)
+        return result
 
+# zip returns a list of tuples. This is fine when foo and bar are not massive. 
+# If they are both massive then forming zip(foo,bar) is an unnecessarily massive 
+# temporary variable, and should be replaced by itertools.izip or
+# itertools.izip_longest, which returns an iterator instead of a list.
 
 # {  
 #   day:2, // day 1: sunday, day 2: monday, etc.
@@ -250,6 +253,12 @@ class Stays_Graph(Resource):
 #   label: "home" // sitio onde aconteceu a stay ou a stay "mais importante"
 #   // no caso de haver varias stays para um bloco, mostrar a maior
 # }
+
+# For each row of the stays table, construct a response
+# as shown below and return the JSON with the set of
+# responses. If a stay uses more than a one-hour block,
+# multiply the same response for each of the hours,
+# adjusting the time_spent on each one
 
 class Slider_Min_Date(Resource):
   def get(self):
