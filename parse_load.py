@@ -202,6 +202,8 @@ def insertSegment(cur, segment):
         return psycopg2.Timestamp(d.year, d.month, d.day, d.hour, d.minute, d.second)
 
     tstamps = map(lambda p: p.time, segment.points)
+    # tstamps = [p.time for p in segment.points]
+    
     cur.execute("""
             INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps)
             VALUES (%s, %s, %s, %s, %s, %s, %s)

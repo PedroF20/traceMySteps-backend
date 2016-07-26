@@ -10,13 +10,12 @@ import psycopg2
 import psycopg2.extras
 import gpxpy
 import gpxpy.gpx
+import datetime
 from life_source import Life
 from life_source import Day
 from flask import Response, Flask, request, abort, render_template
 from flask import jsonify
-from datetime import datetime
 from flask_restful import Resource, Api
-from sqlalchemy import create_engine
 from json import dumps
 
 app = Flask(__name__)
@@ -108,7 +107,26 @@ class Hexbin_Tracks_Data(Resource):
 
 class Calendar_Data(Resource):
   def get(self):
-    return
+    result = []
+    details_array = []
+    # Times are converted to seconds
+    #error: esta a meter as stays todas em cada dia, em vez das stays correspondentes a cada dia
+    for day in life.days:
+      for span in day.spans:
+        if type(span.place) is str:
+          details = {
+            'name': span.place,
+            'date': 0,
+            'value': (span.length() * 60),
+          }
+          details_array.append(details)
+      data = {
+        'date': datetime.datetime.strptime(day.date, '%Y_%m_%d').strftime('%Y-%m-%d'),
+        'total': (day.somewhere() * 60),
+        'details': details_array
+      }
+      result.append(data)
+    return result
 
 
 class Area_Gradient_Data(Resource):
@@ -231,6 +249,10 @@ class Stays_Graph(Resource):
         except:
           print("Error executing select")
         locations = cur.fetchall()
+        for day in range(1, 8):
+          for hour in range (1, 25):
+            print day
+            print hour
         for dow_datum, location_datum in itertools.izip_longest(day_of_week, locations):
           d = {
             'day' : dow_datum,
@@ -239,10 +261,9 @@ class Stays_Graph(Resource):
           result.append(d)
         return result
 
-# zip returns a list of tuples. This is fine when foo and bar are not massive. 
-# If they are both massive then forming zip(foo,bar) is an unnecessarily massive 
-# temporary variable, and should be replaced by itertools.izip or
-# itertools.izip_longest, which returns an iterator instead of a list.
+# maybe construct answer only using LIFE?
+# day and hour will be combination of all days of week and hours of the day
+# which is a matrix ([0][0], [0][1],...) -> for days inside of for hours or vice-versa
 
 # {  
 #   day:2, // day 1: sunday, day 2: monday, etc.
