@@ -108,10 +108,9 @@ class Hexbin_Tracks_Data(Resource):
 class Calendar_Data(Resource):
   def get(self):
     result = []
-    details_array = []
     # Times are converted to seconds
-    #error: esta a meter as stays todas em cada dia, em vez das stays correspondentes a cada dia
     for day in life.days:
+      details_array = []
       for span in day.spans:
         if type(span.place) is str:
           details = {
