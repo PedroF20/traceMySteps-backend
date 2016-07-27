@@ -11,6 +11,7 @@ import psycopg2.extras
 import gpxpy
 import gpxpy.gpx
 import datetime
+import life_source
 from life_source import Life
 from life_source import Day
 from flask import Response, Flask, request, abort, render_template
@@ -113,9 +114,10 @@ class Calendar_Data(Resource):
       details_array = []
       for span in day.spans:
         if type(span.place) is str:
+          real_date = datetime.datetime.strptime("%s %s" % (day.date, life_source.minutes_to_military(span.start)), "%Y_%m_%d %H%M")
           details = {
             'name': span.place,
-            'date': 0,
+            'date': str(real_date),
             'value': (span.length() * 60),
           }
           details_array.append(details)
@@ -304,7 +306,7 @@ class Slider_Max_Date(Resource):
 
 api.add_resource(Hexbin_Places_Data, '/hexbinPlaces')
 api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
-api.add_resource(Calendar_Data, '/calendar') # LAST
+api.add_resource(Calendar_Data, '/calendar')
 api.add_resource(Area_Gradient_Data, '/areagradient')
 api.add_resource(GPS_Tracks, '/gpstracks') # LAST
 api.add_resource(BarChart_Frequency_Data, '/barchartFrequency')
