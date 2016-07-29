@@ -13,6 +13,17 @@ from life_source import Life
 
 
 life = Life("MyTracks.life")
+
+# By using the non-RDP simplified tracks here, we allow our database to have
+# more detail: all the existing trips are specified (if we used the RDP tracks,
+# some trips would be missing), and although it is not
+# as fast, the centroids and bounds are calculated with more detail.
+
+# HOJE: COMPARAR AS 76 NON RDP TRIPS COM AS 54 RDP TRIPS E VER QUAL DELAS
+# MANTEM A INFORMACAO TOTALMENTE INTACTA. SE A DE 76 MANTIVER TUDO E NAO APAGAR
+# ALGUMAS TRIPS, APESAR DE ACRESCENTAR ALGUM "LIXO" -> DEIXAR ESTA PASTA
+# SE A DE 54 MANTIVER TUDO E RETIRAR ALGUM LIXO -> METER A NOVA
+# SE A DE 54 CORTAR TRIPS -> METER A PRIMEIRA
 files_directory = 'MyTracks/'
 
 

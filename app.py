@@ -24,11 +24,18 @@ api = Api(app)
 
 
 ############################################################################
-################  LIFE and tracks direct manipulation  #####################
+################      LIFE and tracks manipulation      ####################
 ############################################################################
 
 life = Life("MyTracks.life")
-files_directory = 'MyTracks/'
+
+# To show information on the hexbins and the tracks themselves more 
+# quickly: processing and the endpoints (lowering the quantity
+# of data sent, allowing more speed and responsiveness),
+# a simplified dataset is imperative.
+# So here we can use the RDP-simplified tracks.
+# We will lose little to no quality of the visual information.
+files_directory = 'MyTracks/ProcessedTracks/'
 
 
 # def loadLatLon(gpx, vector):
@@ -144,11 +151,12 @@ class Area_Gradient_Data(Resource):
 
 class GPS_Tracks(Resource):
   def get(self):
-        #Connect to databse
-        conn = connectDB()
-        cur = conn.cursor()
-        #Perform query and return JSON data
-        return
+      files =[]
+      for f in os.listdir(files_directory):
+        if f.endswith(".gpx"):
+          files.append(f)
+      files.sort()
+      return files
 
 
 class BarChart_Frequency_Data(Resource):
@@ -308,7 +316,8 @@ api.add_resource(Hexbin_Places_Data, '/hexbinPlaces')
 api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar')
 api.add_resource(Area_Gradient_Data, '/areagradient')
-api.add_resource(GPS_Tracks, '/gpstracks') # LAST
+api.add_resource(GPS_Tracks, '/gpstracklist')
+#api.add_resource(Visits_on_Date, '/tracksfiles/') # LAST
 api.add_resource(BarChart_Frequency_Data, '/barchartFrequency')
 api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
 api.add_resource(Chord_Data, '/chord')
