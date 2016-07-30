@@ -32,7 +32,6 @@ if __name__ == '__main__':
     current_day = ""
     for entry in sorted(glob.glob(directory_name + "*.[gG][pP][xX]")):
 
-        name = 0
         file = open(entry, 'rb')
         gpx_xml = file.read()
         file.close()
@@ -46,7 +45,7 @@ if __name__ == '__main__':
                 else:
                     name += 1
 
-                segment.simplify(1) #RDP
+                segment.simplify(5) # RDP
 
                 gpx_write = gpxpy.gpx.GPX()
 

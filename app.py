@@ -29,11 +29,10 @@ api = Api(app)
 
 life = Life("MyTracks.life")
 
-# To show information on the hexbins and the tracks themselves more 
-# quickly: processing and the endpoints (lowering the quantity
-# of data sent, allowing more speed and responsiveness),
-# a simplified dataset is imperative.
-# So here we can use the RDP-simplified tracks.
+# We use the RDP-simplified tracks to show information on the 
+# hexbins and the tracks themselves more quickly.
+# It lowers the quantity of data sent through the endpoints,
+# allowing more speed and responsiveness.
 # We will lose little to no quality of the visual information.
 files_directory = 'MyTracks/ProcessedTracks/'
 
