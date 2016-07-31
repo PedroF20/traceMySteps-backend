@@ -66,4 +66,6 @@ postgres_commands.rtf
 
 *.gpx
 
+*.life
+
 test.py
