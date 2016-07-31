@@ -50,10 +50,22 @@ psql postgres
 8) To re-access the tracemysteps DB:
 `psql tracemysteps`
 
-9) Run the app:
+While on the project folder:
+
+9) Make sure to have a `MyTracks.life` file, containing the semantic information about your trips and stays.
+
+10) Also make sure to have a `MyTracks`folder, containing all your `.gpx`files.
+
+11) Run the Ramer–Douglas–Peucker algorithm in order to simplify dataset:
+`python process_gpx.py`
+
+12) Run the `parse_load.py`file in order to populate the database:
+`python parse_load.py`
+
+13) Run the app (click "Allow" when prompted):
 `python app.py`
 
-10) Stop server:
+14) Stop server:
 `pg_ctl stop`
 
 I strongly advise the use of the pgAdmin3 tool as a visual aid and complement to the shell commands.
