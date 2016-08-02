@@ -83,5 +83,6 @@ if __name__ == '__main__':
     print "generated nr files " , file_count
     print "total size "  , total_size
     print datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    shutil.rmtree(destination_folder)
     copyDirectory(source_folder, destination_folder)
-    print "ALL DATA IS PROCESSED AND IMPORTED.\nYOU CAN NOW CLOSE THIS."
+    print "ALL DATA IS PROCESSED AND EXPORTED.\nYOU CAN NOW CLOSE THIS."
