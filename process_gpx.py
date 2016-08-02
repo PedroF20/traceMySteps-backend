@@ -2,7 +2,21 @@
 def getKey(customobj):
     return customobj.getKey()
 
+def copyDirectory(src, dest):
+    try:
+        shutil.copytree(src, dest)
+    # Directories are the same
+    except shutil.Error as e:
+        print('Directory not copied. Error: %s' % e)
+    # Any error saying that the directory doesn't exist
+    except OSError, e:
+        print('Directory not copied. Error: %s' % e)
+
+source_folder = "MyTracks/ProcessedTracks"
+destination_folder = "../angular-tracemysteps/ProcessedTracks"
+
 if __name__ == '__main__':
+    import shutil
     import gpxpy
     import gpxpy.gpx
     import glob
@@ -69,4 +83,5 @@ if __name__ == '__main__':
     print "generated nr files " , file_count
     print "total size "  , total_size
     print datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
-    print "ALL DATA IS PROCESSED.\nYOU CAN NOW CLOSE THIS."
+    copyDirectory(source_folder, destination_folder)
+    print "ALL DATA IS PROCESSED AND IMPORTED.\nYOU CAN NOW CLOSE THIS."

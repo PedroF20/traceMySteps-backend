@@ -269,6 +269,8 @@ class Stays_Graph(Resource):
           result.append(d)
         return result
 
+# cur.execute("SELECT start_date::timestamp AT TIME ZONE 'UTC' from trips")
+
 # maybe construct answer only using LIFE?
 # day and hour will be combination of all days of week and hours of the day
 # which is a matrix ([0][0], [0][1],...) -> for days inside of for hours or vice-versa
@@ -316,7 +318,6 @@ api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar')
 api.add_resource(Area_Gradient_Data, '/areagradient')
 api.add_resource(GPS_Tracks, '/gpstracklist')
-#api.add_resource(Visits_on_Date, '/tracksfiles/') # LAST
 api.add_resource(BarChart_Frequency_Data, '/barchartFrequency')
 api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
 api.add_resource(Chord_Data, '/chord')
