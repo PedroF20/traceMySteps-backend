@@ -269,6 +269,8 @@ class Stays_Graph(Resource):
           result.append(d)
         return result
 
+        
+
 # cur.execute("SELECT start_date::timestamp AT TIME ZONE 'UTC' from trips")
 
 # maybe construct answer only using LIFE?

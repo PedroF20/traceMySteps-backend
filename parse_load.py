@@ -132,12 +132,27 @@ def insertLocation(cur, label, point):
             WHERE label=%s
             """, (label, ))
     if cur.rowcount > 0  and point is None:
-        # ignore
         print "ignore"
     elif cur.rowcount > 0:
         # Updates current location set of points and centroid
         _, centroid, point_cluster = cur.fetchone()
         point_cluster = ppygis.Geometry.read_ewkb(point_cluster)
+
+        # # Update point cluster by appending the new point
+        # cur.execute("""
+        #             UPDATE locations
+        #             SET point_cluster = ST_AddPoint(point_cluster::geometry, %s, 1)
+        #             WHERE label=%s
+        #             """, (dbPoint(point), label))
+
+        # # Get the updated point cluster in order to calculate centroid
+        # cur.execute("""
+        #             SELECT label, centroid, point_cluster
+        #             FROM locations
+        #             WHERE label=%s
+        #             """, (label, ))
+        # _, centroid, point_cluster = cur.fetchone()
+        # point_cluster = ppygis.Geometry.read_ewkb(point_cluster)
 
         if point_cluster is not None:
             centroid = computeCentroid(pointsFromDb(point_cluster))
@@ -147,6 +162,7 @@ def insertLocation(cur, label, point):
                     SET centroid=%s, point_cluster=%s
                     WHERE label=%s
                     """, (centroid.write_ewkb(), point_cluster.write_ewkb(), label))
+                    # SET centroid=ST_Force3D(ST_Centroid(%s))
     else:
         # Creates new location
         if label == "":

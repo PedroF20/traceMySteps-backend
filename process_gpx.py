@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
                 gpx_string = gpx_write.to_xml()
                 file_count+=1
-                total_size += sys.getsizeof(gpx_string)
+                total_size += sys.getsizeof(gpx_string) # bytes
 
                 fo.write(gpx_string)
                 fo.close()
