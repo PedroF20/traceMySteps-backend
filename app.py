@@ -240,35 +240,85 @@ class Arc_Nodes_Data(Resource):
         return nodes
 
 
+# class Stays_Graph(Resource):
+#   def get(self):
+#         result = []
+#         #Connect to databse
+#         conn = connectDB()
+#         cur = conn.cursor()
+#         #Perform query and return JSON data
+#         try:
+#           cur.execute("SELECT EXTRACT (DOW FROM start_date) from stays")
+#         except:
+#           print("Error executing select")
+#         day_of_week = cur.fetchall()
+#         try:
+#           cur.execute("SELECT location_label from stays")
+#         except:
+#           print("Error executing select")
+#         locations = cur.fetchall()
+#         for day in range(1, 8):
+#           for hour in range (1, 25):
+#             print day
+#             print hour
+#         for dow_datum, location_datum in itertools.izip_longest(day_of_week, locations):
+#           d = {
+#             'day' : dow_datum,
+#             'label': location_datum
+#           }
+#           result.append(d)
+#         return result
+
+def moreTimeSpent (day_number, hour_number):
+  monday_list = []
+  tuesday_list = []
+  wednesday_list = []
+  thursday_list = []
+  friday_list = []
+  saturday_list = []
+  sunday_list = []
+  day_list = []
+  for day in life.days:
+    date_object = datetime.datetime.strptime(day.date, '%Y_%m_%d')
+    day_list.append(date_object)
+  for date in day_list:
+    # For the datetime.weekday() function, Monday is 0 and Sunday is 6
+    # We need to convert to a date object in order to use the weekday()
+    # Then it is converted again to the LIFE format
+    if (date.weekday() == 0):
+      monday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 1):
+      tuesday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 2):
+      wednesday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 3):
+      thursday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 4):
+      friday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 5):
+      saturday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 6):
+      sunday_list.append(date.strftime('%Y_%m_%d'))
+
+
+
+
+
+
 class Stays_Graph(Resource):
   def get(self):
         result = []
-        #Connect to databse
-        conn = connectDB()
-        cur = conn.cursor()
-        #Perform query and return JSON data
-        try:
-          cur.execute("SELECT EXTRACT (DOW FROM start_date) from stays")
-        except:
-          print("Error executing select")
-        day_of_week = cur.fetchall()
-        try:
-          cur.execute("SELECT location_label from stays")
-        except:
-          print("Error executing select")
-        locations = cur.fetchall()
         for day in range(1, 8):
           for hour in range (1, 25):
-            print day
-            print hour
-        for dow_datum, location_datum in itertools.izip_longest(day_of_week, locations):
-          d = {
-            'day' : dow_datum,
-            'label': location_datum
-          }
-          result.append(d)
+            time_label = moreTimeSpent(day, hour)
+            d = {
+              'day': day,
+              'hour': hour
+              # 'time_spent': time_label[0],
+              # 'label': time_label[1]
+            }
+            result.append(d)
         return result
-
         
 
 # cur.execute("SELECT start_date::timestamp AT TIME ZONE 'UTC' from trips")
@@ -276,16 +326,6 @@ class Stays_Graph(Resource):
 # maybe construct answer only using LIFE?
 # day and hour will be combination of all days of week and hours of the day
 # which is a matrix ([0][0], [0][1],...) -> for days inside of for hours or vice-versa
-
-# {  
-#   day:2, // day 1: sunday, day 2: monday, etc.
-#   hour:1, // // 1-1 ate 1-1.59 -> corresponde ao intervalo 0 ate 0.59
-#   // "primeira hora do dia" - fazer esta associacao no backend
-#   // ex: if 00<=hour<=00.59 -> hour=1
-#   time_spent:57,// in minutes - maximo de 60 pois o bloco e de 1 hr
-#   label: "home" // sitio onde aconteceu a stay ou a stay "mais importante"
-#   // no caso de haver varias stays para um bloco, mostrar a maior
-# }
 
 # For each row of the stays table, construct a response
 # as shown below and return the JSON with the set of
