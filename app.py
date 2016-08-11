@@ -38,28 +38,28 @@ life = Life("MyTracks.life")
 files_directory = 'MyTracks/ProcessedTracks/'
 
 
-# def loadLatLon(gpx, vector):
-#   for track in gpx.tracks:
-#     for segment in track.segments:
-#       for point in segment.points:
-#         print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
-#         # Hexbin library works with (lon, lat) instead of (lat, lon)
-#         vector.append([point.longitude, point.latitude])
+def loadLatLon(gpx, vector):
+  for track in gpx.tracks:
+    for segment in track.segments:
+      for point in segment.points:
+        print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
+        # Hexbin library works with (lon, lat) instead of (lat, lon)
+        vector.append([point.longitude, point.latitude])
 
 
-# result = []
-# files =[]
-# for f in os.listdir(files_directory):
-#     files.append(f)
-# files.sort()
+result = []
+files =[]
+for f in os.listdir(files_directory):
+    files.append(f)
+files.sort()
 
-# for f in files:
-#   if f.endswith(".gpx"):
-#     filename = os.path.join(files_directory, f)
-#     print filename
-#     gpx_file = open(filename, 'r')
-#     tracks = gpxpy.parse(gpx_file)
-#     loadLatLon(tracks, result)
+for f in files:
+  if f.endswith(".gpx"):
+    filename = os.path.join(files_directory, f)
+    print filename
+    gpx_file = open(filename, 'r')
+    tracks = gpxpy.parse(gpx_file)
+    loadLatLon(tracks, result)
 
 
 ############################################################################
@@ -96,7 +96,7 @@ class Hexbin_Places_Data(Resource):
         #Perform query and return JSON data
         try:
           #Centroids cannot be null, we need them to show the coordinates
-          cur.execute("SELECT ST_X(centroid::geometry), ST_Y(centroid::geometry), visit_frequency FROM locations WHERE centroid NOTNULL")
+          cur.execute("SELECT ST_X(centroid::geometry), ST_Y(centroid::geometry), visit_frequency, label FROM locations WHERE centroid NOTNULL")
         except:
           print("Error executing select")
         response = cur.fetchall()
@@ -104,7 +104,7 @@ class Hexbin_Places_Data(Resource):
         for datum in response:
           for _ in range(datum[2]):
             # Hexbin library works with (lon, lat) instead of (lat, lon)
-            array.append([datum[1], datum[0]])
+            array.append([datum[1], datum[0], datum[3], datum[2]])
         return array
 
 
