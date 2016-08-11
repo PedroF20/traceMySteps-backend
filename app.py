@@ -4,6 +4,7 @@ import argparse
 import itertools
 import os
 import json
+import numpy as np
 import subprocess
 import ppygis
 import psycopg2
@@ -240,36 +241,17 @@ class Arc_Nodes_Data(Resource):
         return nodes
 
 
-# class Stays_Graph(Resource):
-#   def get(self):
-#         result = []
-#         #Connect to databse
-#         conn = connectDB()
-#         cur = conn.cursor()
-#         #Perform query and return JSON data
-#         try:
-#           cur.execute("SELECT EXTRACT (DOW FROM start_date) from stays")
-#         except:
-#           print("Error executing select")
-#         day_of_week = cur.fetchall()
-#         try:
-#           cur.execute("SELECT location_label from stays")
-#         except:
-#           print("Error executing select")
-#         locations = cur.fetchall()
-#         for day in range(1, 8):
-#           for hour in range (1, 25):
-#             print day
-#             print hour
-#         for dow_datum, location_datum in itertools.izip_longest(day_of_week, locations):
-#           d = {
-#             'day' : dow_datum,
-#             'label': location_datum
-#           }
-#           result.append(d)
-#         return result
+def checkEqual(iterator):
+  try:
+     iterator = iter(iterator)
+     first = next(iterator)
+     return all(first == rest for rest in iterator)
+  except StopIteration:
+     return True
+
 
 def moreTimeSpent (day_number, hour_number):
+  result = []
   monday_list = []
   tuesday_list = []
   wednesday_list = []
@@ -278,9 +260,11 @@ def moreTimeSpent (day_number, hour_number):
   saturday_list = []
   sunday_list = []
   day_list = []
+
   for day in life.days:
     date_object = datetime.datetime.strptime(day.date, '%Y_%m_%d')
     day_list.append(date_object)
+
   for date in day_list:
     # For the datetime.weekday() function, Monday is 0 and Sunday is 6
     # We need to convert to a date object in order to use the weekday()
@@ -300,6 +284,117 @@ def moreTimeSpent (day_number, hour_number):
     elif (date.weekday() == 6):
       sunday_list.append(date.strftime('%Y_%m_%d'))
 
+  # Convert the hour number to military format
+  if (hour_number == 1):
+    hour_number = "0000"
+  elif (hour_number == 2):
+    hour_number = "0100"
+  elif (hour_number == 3):
+    hour_number = "0200"
+  elif (hour_number == 4):
+    hour_number = "0300"
+  elif (hour_number == 5):
+    hour_number = "0400"
+  elif (hour_number == 6):
+    hour_number = "0500"
+  elif (hour_number == 7):
+    hour_number = "0600"
+  elif (hour_number == 8):
+    hour_number = "0700"
+  elif (hour_number == 9):
+    hour_number = "0800"
+  elif (hour_number == 10):
+    hour_number = "0900"
+  elif (hour_number == 11):
+    hour_number = "1000"
+  elif (hour_number == 12):
+    hour_number = "1100"
+  elif (hour_number == 13):
+    hour_number = "1200"
+  elif (hour_number == 14):
+    hour_number = "1300"
+  elif (hour_number == 15):
+    hour_number = "1400"
+  elif (hour_number == 16):
+    hour_number = "1500"
+  elif (hour_number == 17):
+    hour_number = "1600"
+  elif (hour_number == 18):
+    hour_number = "1700"
+  elif (hour_number == 19):
+    hour_number = "1800"
+  elif (hour_number == 20):
+    hour_number = "1900"
+  elif (hour_number == 21):
+    hour_number = "2000"
+  elif (hour_number == 22):
+    hour_number = "2100"
+  elif (hour_number == 23):
+    hour_number = "2200"
+  elif (hour_number == 24):
+    hour_number = "2300"
+
+  # Operate the day and hour numbers
+  if (day_number == 1):
+    tmp = []
+    for day in sunday_list:
+      response = life.where_when(day, hour_number)
+      tmp.append(response)
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      tmp.append(half_hour_later)
+      print tmp
+      if (half_hour_later == None):
+        pass
+      else:  
+        result.append(half_hour_later)
+        if (len(result) == 1):
+          time_spent = life.when_at(result[0])[0].length()
+          result.append(time_spent)
+          return result
+        else:
+          pass
+
+  elif (day_number == 2):
+    comparing_day = []
+    tmp = []
+    for day in monday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      comparing_day.append(day)
+      if (half_hour_later == None):
+        pass
+      else:
+        tmp.append(half_hour_later)
+    print tmp
+    if (checkEqual(tmp) == True):
+      pass
+    elif (len(tmp) == 1):
+      temp_date_vector = []
+      for x in xrange(0,len(life.when_at(tmp[0]))):
+        temp_date_vector.append(life.when_at(tmp[0])[x].day)
+      #if(set(tmp) == set(life.when_at(tmp[0])[x].day)):
+      true_date = np.intersect1d(temp_date_vector, comparing_day)
+      time_spent = life.when_at(tmp[0])[x].length()
+      tmp.append(time_spent)
+      return tmp
+    elif (not tmp):
+      result.append("No place")
+      result.append(0)
+      return result
+
+  elif (day_number == 3):
+    tuesday_list
+  elif (day_number == 4):
+    wednesday_list
+  elif (day_number == 5):
+    thursday_list
+  elif (day_number == 6):
+    friday_list
+  elif (day_number == 7):
+    saturday_list
 
 
 
@@ -308,14 +403,16 @@ def moreTimeSpent (day_number, hour_number):
 class Stays_Graph(Resource):
   def get(self):
         result = []
+        time_label = moreTimeSpent(2, 1)
+        #print time_label
         for day in range(1, 8):
           for hour in range (1, 25):
-            time_label = moreTimeSpent(day, hour)
+            #time_label = moreTimeSpent(day, hour)
             d = {
               'day': day,
               'hour': hour
-              # 'time_spent': time_label[0],
-              # 'label': time_label[1]
+              # 'time_spent': time_label[1],
+              # 'label': time_label[0]
             }
             result.append(d)
         return result
