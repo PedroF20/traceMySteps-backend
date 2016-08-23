@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS trips (
   -- LineString defines a line through the points in given order. MultiPoint defines a finite collection of points.
 
   -- Length of timestamps must be the same as the length of points
-  timestamps TIMESTAMP WITH TIME ZONE[] NULL
+  timestamps TIMESTAMP WITH TIME ZONE[] NULL,
+
+  start_of_trip DATE NOT NULL
 
   -- para efeitos de load, cada track e uma trip
 );
@@ -50,7 +52,8 @@ CREATE TABLE IF NOT EXISTS stays (
   location_label TEXT REFERENCES locations(label),
   start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  time_spent INTEGER NOT NULL
+  time_spent INTEGER NOT NULL,
+  ddmmyy DATE NOT NULL
   -- cada linha de um LIFE e uma stay
 );
 

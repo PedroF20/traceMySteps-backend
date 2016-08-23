@@ -28,10 +28,11 @@ def load_from_life(cur):
             time_spent = span.length()
             print time_spent
             start = datetime.datetime.strptime("%s %s" % (date, life_source.minutes_to_military(span.start)), "%Y_%m_%d %H%M")
+            ddmmyy = datetime.datetime.strptime(date, '%Y_%m_%d').strftime('%Y-%m-%d')
             end = datetime.datetime.strptime("%s %s" % (date, life_source.minutes_to_military(span.end)), "%Y_%m_%d %H%M")
             if type(span.place) is str:
                 insertLocation(cur, span.place, None)
-                insertStay(cur, span.place, start, end, time_spent)
+                insertStay(cur, span.place, start, end, time_spent, ddmmyy)
 
 def dbPoint(point):
     return ppygis.Point(point.latitude, point.longitude, point.elevation, srid=4326).write_ewkb()
@@ -206,12 +207,12 @@ def insertTrip(cur, trip):
     # insertStays(cur, trip, ids)
 
 
-def insertStay(cur, label, start_date, end_date, time_spent):
+def insertStay(cur, label, start_date, end_date, time_spent, date):
     if label != "":
         cur.execute("""
-            INSERT INTO stays(location_label, start_date, end_date, time_spent)
-            VALUES (%s, %s, %s, %s)
-            """, (label, start_date, end_date, time_spent))
+            INSERT INTO stays(location_label, start_date, end_date, time_spent, ddmmyy)
+            VALUES (%s, %s, %s, %s, %s)
+            """, (label, start_date, end_date, time_spent, date))
 
 
 def insertSegment(cur, segment):
@@ -224,11 +225,12 @@ def insertSegment(cur, segment):
     #tstamps = map(lambda p: p.time, segment.points)
     tstamps = [p.time for p in segment.points]
 
-    # print segment.points[0].time.tm_isdst
+    trip_start = segment.points[0].time.strftime("%Y-%m-%d")
+    
 
     cur.execute("""
-            INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps, start_of_trip)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING trip_id
             """,
             (   segment.location_from,
@@ -237,7 +239,8 @@ def insertSegment(cur, segment):
                 segment.points[-1].time,
                 dbBounds(getBounds(segment)),
                 dbPoints(segment.points),
-                tstamps
+                tstamps,
+                trip_start
                 ))
     trip_id = cur.fetchone()
     trip_id = trip_id[0]

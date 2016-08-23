@@ -44,7 +44,7 @@ def loadLatLon(gpx, vector):
       for point in segment.points:
         print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
         # Hexbin library works with (lon, lat) instead of (lat, lon)
-        vector.append([point.longitude, point.latitude])
+        vector.append([point.longitude, point.latitude, point.time.strftime("%Y-%m-%d")])
 
 
 result = []
@@ -142,7 +142,7 @@ class Area_Gradient_Data(Resource):
     result = []
     for day in life.days:
       d = {
-        'date' : day.date,
+        'date' : datetime.datetime.strptime(day.date, '%Y_%m_%d').strftime('%Y-%m-%d'),
         'price': day.moving()
       }
       result.append(d)
@@ -180,7 +180,7 @@ class BarChart_TimeSpent_Data(Resource):
         cur = conn.cursor()
         #Perform query and return JSON data
         try:
-          cur.execute("select json_build_object('label', location_label, 'value', time_spent) from stays")
+          cur.execute("select json_build_object('label', location_label, 'value', time_spent, 'date', ddmmyy) from stays")
         except:
           print("Error executing select")
         TimeData = list (i[0] for i in cur.fetchall())
@@ -194,7 +194,7 @@ class Chord_Data(Resource):
         cur = conn.cursor()
         #Perform query and return JSON data
         try:
-          cur.execute("select json_build_object('from', start_location, 'to', end_location) from trips")
+          cur.execute("select json_build_object('from', start_location, 'to', end_location, 'start', start_of_trip) from trips")
         except:
           print("Error executing select")
         ChordList = list (i[0] for i in cur.fetchall())
@@ -234,7 +234,7 @@ class Arc_Nodes_Data(Resource):
         cur = conn.cursor()
         #Perform query and return JSON data
         try:
-          cur.execute("SELECT start_location FROM trips UNION SELECT end_location FROM trips")
+          cur.execute("SELECT start_location, start_of_trip FROM trips UNION SELECT end_location FROM trips")
         except:
           print("Error executing select")
         nodes = [{'id': i[0]} for i in cur.fetchall()]
