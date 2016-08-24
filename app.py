@@ -110,7 +110,15 @@ class Hexbin_Places_Data(Resource):
 
 class Hexbin_Tracks_Data(Resource):
   def get(self):
-        return result
+    response = []
+    for datum in result:
+      d = {
+      'lon': datum[0],
+      'lat': datum[1],
+      'date': datum[2],
+      }
+      response.append(d)
+    return response
 
 
 class Calendar_Data(Resource):
@@ -234,7 +242,7 @@ class Arc_Nodes_Data(Resource):
         cur = conn.cursor()
         #Perform query and return JSON data
         try:
-          cur.execute("SELECT start_location, start_of_trip FROM trips UNION SELECT end_location FROM trips")
+          cur.execute("SELECT start_location FROM trips UNION SELECT end_location FROM trips")
         except:
           print("Error executing select")
         nodes = [{'id': i[0]} for i in cur.fetchall()]
