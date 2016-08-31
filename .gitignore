@@ -69,3 +69,5 @@ postgres_commands.rtf
 *.life
 
 test.py
+
+.DS_Store
