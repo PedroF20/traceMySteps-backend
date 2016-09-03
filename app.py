@@ -38,28 +38,28 @@ life = Life("MyTracks.life")
 files_directory = 'MyTracks/ProcessedTracks/'
 
 
-def loadLatLon(gpx, vector):
-  for track in gpx.tracks:
-    for segment in track.segments:
-      for point in segment.points:
-        print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
-        # Hexbin library works with (lon, lat) instead of (lat, lon)
-        vector.append([point.longitude, point.latitude, point.time.strftime("%Y-%m-%d")])
+# def loadLatLon(gpx, vector):
+#   for track in gpx.tracks:
+#     for segment in track.segments:
+#       for point in segment.points:
+#         print 'Point at ({0},{1}) -> {2} {3}'.format(point.latitude, point.longitude, point.elevation, point.time)
+#         # Hexbin library works with (lon, lat) instead of (lat, lon)
+#         vector.append([point.longitude, point.latitude, point.time.strftime("%Y-%m-%d")])
 
 
-result = []
-files =[]
-for f in os.listdir(files_directory):
-    files.append(f)
-files.sort()
+# result = []
+# files =[]
+# for f in os.listdir(files_directory):
+#     files.append(f)
+# files.sort()
 
-for f in files:
-  if f.endswith(".gpx"):
-    filename = os.path.join(files_directory, f)
-    print filename
-    gpx_file = open(filename, 'r')
-    tracks = gpxpy.parse(gpx_file)
-    loadLatLon(tracks, result)
+# for f in files:
+#   if f.endswith(".gpx"):
+#     filename = os.path.join(files_directory, f)
+#     print filename
+#     gpx_file = open(filename, 'r')
+#     tracks = gpxpy.parse(gpx_file)
+#     loadLatLon(tracks, result)
 
 
 ############################################################################
@@ -259,7 +259,9 @@ def checkEqual(iterator):
 
 
 def moreTimeSpent (day_number, hour_number):
-  result = []
+  final = []
+  label_array = []
+  time_spent_array = []
   monday_list = []
   tuesday_list = []
   wednesday_list = []
@@ -344,65 +346,79 @@ def moreTimeSpent (day_number, hour_number):
 
   # Operate the day and hour numbers
   if (day_number == 1):
-    tmp = []
     for day in sunday_list:
-      response = life.where_when(day, hour_number)
-      tmp.append(response)
       # We ll calculate in the half hour, as a rough estimate
       plus_half = '%04d' % (int(hour_number) + 30)
       half_hour_later = life.where_when(day, plus_half)
-      tmp.append(half_hour_later)
-      print tmp
-      if (half_hour_later == None):
-        pass
-      else:  
-        result.append(half_hour_later)
-        if (len(result) == 1):
-          time_spent = life.when_at(result[0])[0].length()
-          result.append(time_spent)
-          return result
-        else:
-          pass
-
-  elif (day_number == 2):
-    comparing_day = []
-    tmp = []
-    for day in monday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      comparing_day.append(day)
-      if (half_hour_later == None):
-        pass
+      if (half_hour_later is not None):
+        label_array.append(half_hour_later)
+        # Appended the label of the stay associated with that day/hour tuple. We have only
+        # identified it. Now we need the duration of that exact stay, in that exact day/hour.
+        # For that, we need to find the spans that contain the stays for each label, and then
+        # match the days of the spans to the days in our day_of_the_week_list.
+        # When a match is found, it means we got the span corresponding to that label, in
+        # that exact day. We also need to make sure that the span is in the correct hour.
+        # If it is, we finally have the desired span, and only need to get its length.
+        for datum in label_array:
+          tmp = life.when_at(datum)
+          for span in tmp:
+            if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+              if (span.day == day):
+                time_spent_array.append(span.length())
       else:
-        tmp.append(half_hour_later)
-    print tmp
-    if (checkEqual(tmp) == True):
-      pass
-    elif (len(tmp) == 1):
-      temp_date_vector = []
-      for x in xrange(0,len(life.when_at(tmp[0]))):
-        temp_date_vector.append(life.when_at(tmp[0])[x].day)
-      #if(set(tmp) == set(life.when_at(tmp[0])[x].day)):
-      true_date = np.intersect1d(temp_date_vector, comparing_day)
-      time_spent = life.when_at(tmp[0])[x].length()
-      tmp.append(time_spent)
-      return tmp
-    elif (not tmp):
-      result.append("No place")
-      result.append(0)
-      return result
+        label_array.append("No place") # User was moving
+        time_spent_array.append(0)
+    # final step: convert the arrays to comma-separated or hyphen-separated strings and return them on an array
+    # in which the first position has the label string and the second position has the time spent string
+    print label_array
+    print time_spent_array
+    final.append(concatenated_labels)
+    final.append(concatenated_times)
+    return final
 
-  elif (day_number == 3):
-    tuesday_list
-  elif (day_number == 4):
-    wednesday_list
-  elif (day_number == 5):
-    thursday_list
-  elif (day_number == 6):
-    friday_list
-  elif (day_number == 7):
-    saturday_list
+
+
+
+
+  # elif (day_number == 2):
+  #   comparing_day = []
+  #   tmp = []
+  #   for day in monday_list:
+  #     # We ll calculate in the half hour, as a rough estimate
+  #     plus_half = '%04d' % (int(hour_number) + 30)
+  #     half_hour_later = life.where_when(day, plus_half)
+  #     comparing_day.append(day)
+  #     if (half_hour_later == None):
+  #       pass
+  #     else:
+  #       tmp.append(half_hour_later)
+  #   print tmp
+  #   if (checkEqual(tmp) == True):
+  #     pass
+  #   elif (len(tmp) == 1):
+  #     temp_date_vector = []
+  #     for x in xrange(0,len(life.when_at(tmp[0]))):
+  #       temp_date_vector.append(life.when_at(tmp[0])[x].day)
+  #     #if(set(tmp) == set(life.when_at(tmp[0])[x].day)):
+  #     true_date = np.intersect1d(temp_date_vector, comparing_day)
+  #     time_spent = life.when_at(tmp[0])[x].length()
+  #     tmp.append(time_spent)
+  #     return tmp
+  #   elif (not tmp):
+  #     result.append("No place")
+  #     result.append(0)
+  #     return result
+
+  # elif (day_number == 3):
+  #   tuesday_list
+  # elif (day_number == 4):
+  #   wednesday_list
+  # elif (day_number == 5):
+  #   thursday_list
+  # elif (day_number == 6):
+  #   friday_list
+  # elif (day_number == 7):
+  #   saturday_list
 
 
 
@@ -411,7 +427,7 @@ def moreTimeSpent (day_number, hour_number):
 class Stays_Graph(Resource):
   def get(self):
         result = []
-        time_label = moreTimeSpent(2, 1)
+        time_label = moreTimeSpent(1, 1)
         #print time_label
         for day in range(1, 8):
           for hour in range (1, 25):
