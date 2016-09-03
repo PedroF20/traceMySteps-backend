@@ -371,7 +371,7 @@ def moreTimeSpent (day_number, hour_number):
         pass
     # final step: convert the arrays to comma-separated or hyphen-separated strings and return them on an array
     # in which the first position has the label string and the second position has the time spent string
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
@@ -397,7 +397,7 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
@@ -423,7 +423,7 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
@@ -449,7 +449,7 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
@@ -475,7 +475,7 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
@@ -501,7 +501,7 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
@@ -527,14 +527,11 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ",".join(label_array)
+    concatenated_labels = ", ".join(label_array)
     concatenated_times = ','.join(map(str, time_spent_array))
     final.append(concatenated_labels)
     final.append(concatenated_times)
     return final
-
-
-
 
 
 class Stays_Graph(Resource):
