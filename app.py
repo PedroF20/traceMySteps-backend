@@ -371,10 +371,16 @@ def moreTimeSpent (day_number, hour_number):
         pass
     # final step: convert the arrays to comma-separated or hyphen-separated strings and return them on an array
     # in which the first position has the label string and the second position has the time spent string
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
   elif (day_number == 2):
@@ -397,10 +403,16 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
   elif (day_number == 3):
@@ -423,10 +435,16 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
   elif (day_number == 4):
@@ -449,10 +467,16 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
   elif (day_number == 5):
@@ -475,10 +499,16 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
   elif (day_number == 6):
@@ -501,10 +531,16 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
   elif (day_number == 7):
@@ -527,10 +563,16 @@ def moreTimeSpent (day_number, hour_number):
               time_spent_array.append(span.length())
       else:
         pass
-    concatenated_labels = ", ".join(label_array)
-    concatenated_times = ','.join(map(str, time_spent_array))
-    final.append(concatenated_labels)
-    final.append(concatenated_times)
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
     return final
 
 
