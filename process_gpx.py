@@ -39,6 +39,7 @@ if __name__ == '__main__':
     DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
     print datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    start_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
     file_count = 0;
     total_size = 0;
     if not os.path.exists(saving_directory):
@@ -83,6 +84,10 @@ if __name__ == '__main__':
     print "generated nr files " , file_count
     print "total size "  , total_size
     print datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    end_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
     shutil.rmtree(destination_folder)
     copyDirectory(source_folder, destination_folder)
     print "ALL DATA IS PROCESSED AND EXPORTED.\nYOU CAN NOW CLOSE THIS."
+    print start_date
+    print "-------------------"
+    print end_date

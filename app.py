@@ -13,6 +13,10 @@ import gpxpy
 import gpxpy.gpx
 import datetime
 import life_source
+import threading
+import multiprocessing
+from multiprocessing import Process
+from threading import Thread
 from life_source import Life
 from life_source import Day
 from flask import Response, Flask, request, abort, render_template
@@ -37,6 +41,323 @@ life = Life("MyTracks.life")
 # We will lose little to no quality of the visual information.
 files_directory = 'MyTracks/ProcessedTracks/'
 
+def moreTimeSpent (day_number, hour_number):
+  monday_list = []
+  tuesday_list = []
+  wednesday_list = []
+  thursday_list = []
+  friday_list = []
+  saturday_list = []
+  sunday_list = []
+  day_list = []
+
+  for day in life.days:
+    date_object = datetime.datetime.strptime(day.date, '%Y_%m_%d')
+    day_list.append(date_object)
+
+  for date in day_list:
+    # For the datetime.weekday() function, Monday is 0 and Sunday is 6
+    # We need to convert to a date object in order to use the weekday()
+    # Then it is converted again to the LIFE format
+    if (date.weekday() == 0):
+      monday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 1):
+      tuesday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 2):
+      wednesday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 3):
+      thursday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 4):
+      friday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 5):
+      saturday_list.append(date.strftime('%Y_%m_%d'))
+    elif (date.weekday() == 6):
+      sunday_list.append(date.strftime('%Y_%m_%d'))
+
+  # Convert the hour number to military format
+  if (hour_number == 1):
+    hour_number = "0000"
+  elif (hour_number == 2):
+    hour_number = "0100"
+  elif (hour_number == 3):
+    hour_number = "0200"
+  elif (hour_number == 4):
+    hour_number = "0300"
+  elif (hour_number == 5):
+    hour_number = "0400"
+  elif (hour_number == 6):
+    hour_number = "0500"
+  elif (hour_number == 7):
+    hour_number = "0600"
+  elif (hour_number == 8):
+    hour_number = "0700"
+  elif (hour_number == 9):
+    hour_number = "0800"
+  elif (hour_number == 10):
+    hour_number = "0900"
+  elif (hour_number == 11):
+    hour_number = "1000"
+  elif (hour_number == 12):
+    hour_number = "1100"
+  elif (hour_number == 13):
+    hour_number = "1200"
+  elif (hour_number == 14):
+    hour_number = "1300"
+  elif (hour_number == 15):
+    hour_number = "1400"
+  elif (hour_number == 16):
+    hour_number = "1500"
+  elif (hour_number == 17):
+    hour_number = "1600"
+  elif (hour_number == 18):
+    hour_number = "1700"
+  elif (hour_number == 19):
+    hour_number = "1800"
+  elif (hour_number == 20):
+    hour_number = "1900"
+  elif (hour_number == 21):
+    hour_number = "2000"
+  elif (hour_number == 22):
+    hour_number = "2100"
+  elif (hour_number == 23):
+    hour_number = "2200"
+  elif (hour_number == 24):
+    hour_number = "2300"
+
+  # Operate the day and hour numbers
+  if (day_number == 1):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in sunday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      # Appended the label of the stay associated with that day/hour tuple. We have only
+      # identified it. Now we need the duration of that exact stay, in that exact day/hour.
+      # For that, we need to find the spans that contain the stays for each label, and then
+      # match the days of the spans to the days in our day_of_the_week_list.
+      # When a match is found, it means we got the span corresponding to that label, in
+      # that exact day. We also need to make sure that the span is in the correct hour.
+      # If it is, we finally have the desired span, and only need to get its length.
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # final step: convert the arrays to comma-separated or hyphen-separated strings and return them on an array
+    # in which the first position has the label string and the second position has the time spent string
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
+  elif (day_number == 2):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in monday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
+  elif (day_number == 3):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in tuesday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
+  elif (day_number == 4):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in wednesday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
+  elif (day_number == 5):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in thursday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
+  elif (day_number == 6):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in friday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
+  elif (day_number == 7):
+    final = []
+    label_array = []
+    time_spent_array = []
+    for day in saturday_list:
+      # We ll calculate in the half hour, as a rough estimate
+      plus_half = '%04d' % (int(hour_number) + 30)
+      half_hour_later = life.where_when(day, plus_half)
+      if (not isinstance(half_hour_later, basestring)):
+        pass
+      elif (half_hour_later is not None):
+        label_array.append(half_hour_later)
+      else:
+        pass
+    for datum in label_array:
+      tmp = life.when_at(datum)
+      for span in tmp:
+        if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
+          if (span.day == day):
+            time_spent_array.append(span.length())
+    # concatenated_labels = ", ".join(label_array)
+    # concatenated_times = ','.join(map(str, time_spent_array))
+    seen = set()
+    uniq = []
+    for x in label_array:
+        if x not in seen:
+            uniq.append(x)
+            seen.add(x)
+    final.append(uniq)
+    final.append(sum(time_spent_array))
+    return final
+
 
 def loadLatLon(gpx, vector):
   for track in gpx.tracks:
@@ -47,19 +368,36 @@ def loadLatLon(gpx, vector):
         vector.append([point.longitude, point.latitude, point.time.strftime("%Y-%m-%d")])
 
 
+time_spent_result = []
 result = []
-files =[]
-for f in os.listdir(files_directory):
-    files.append(f)
-files.sort()
 
-for f in files:
-  if f.endswith(".gpx"):
-    filename = os.path.join(files_directory, f)
-    print filename
-    gpx_file = open(filename, 'r')
-    tracks = gpxpy.parse(gpx_file)
-    loadLatLon(tracks, result)
+def gpxParse():
+  files =[]
+  for f in os.listdir(files_directory):
+      files.append(f)
+  files.sort()
+
+  for f in files:
+    if f.endswith(".gpx"):
+      filename = os.path.join(files_directory, f)
+      print filename
+      gpx_file = open(filename, 'r')
+      tracks = gpxpy.parse(gpx_file)
+      loadLatLon(tracks, result)
+
+
+def staysGraphProcessing():
+  for day in range(1, 8):
+    for hour in range (1, 25):
+      time_label = moreTimeSpent(day, hour)
+      d = {
+        'day': day,
+        'hour': hour,
+        'time_spent': time_label[1],
+        'label': time_label[0]
+      }
+      print "append"
+      time_spent_result.append(d)
 
 
 ############################################################################
@@ -106,19 +444,6 @@ class Hexbin_Places_Data(Resource):
             # Hexbin library works with (lon, lat) instead of (lat, lon)
             array.append([datum[1], datum[0], datum[3], datum[2]])
         return array
-
-
-class Hexbin_Tracks_Data(Resource):
-  def get(self):
-    response = []
-    for datum in result:
-      d = {
-      'lon': datum[0],
-      'lat': datum[1],
-      'date': datum[2],
-      }
-      response.append(d)
-    return response
 
 
 class Calendar_Data(Resource):
@@ -249,354 +574,23 @@ class Arc_Nodes_Data(Resource):
         return nodes
 
 
-def checkEqual(iterator):
-  try:
-     iterator = iter(iterator)
-     first = next(iterator)
-     return all(first == rest for rest in iterator)
-  except StopIteration:
-     return True
-
-
-def moreTimeSpent (day_number, hour_number):
-  monday_list = []
-  tuesday_list = []
-  wednesday_list = []
-  thursday_list = []
-  friday_list = []
-  saturday_list = []
-  sunday_list = []
-  day_list = []
-
-  for day in life.days:
-    date_object = datetime.datetime.strptime(day.date, '%Y_%m_%d')
-    day_list.append(date_object)
-
-  for date in day_list:
-    # For the datetime.weekday() function, Monday is 0 and Sunday is 6
-    # We need to convert to a date object in order to use the weekday()
-    # Then it is converted again to the LIFE format
-    if (date.weekday() == 0):
-      monday_list.append(date.strftime('%Y_%m_%d'))
-    elif (date.weekday() == 1):
-      tuesday_list.append(date.strftime('%Y_%m_%d'))
-    elif (date.weekday() == 2):
-      wednesday_list.append(date.strftime('%Y_%m_%d'))
-    elif (date.weekday() == 3):
-      thursday_list.append(date.strftime('%Y_%m_%d'))
-    elif (date.weekday() == 4):
-      friday_list.append(date.strftime('%Y_%m_%d'))
-    elif (date.weekday() == 5):
-      saturday_list.append(date.strftime('%Y_%m_%d'))
-    elif (date.weekday() == 6):
-      sunday_list.append(date.strftime('%Y_%m_%d'))
-
-  # Convert the hour number to military format
-  if (hour_number == 1):
-    hour_number = "0000"
-  elif (hour_number == 2):
-    hour_number = "0100"
-  elif (hour_number == 3):
-    hour_number = "0200"
-  elif (hour_number == 4):
-    hour_number = "0300"
-  elif (hour_number == 5):
-    hour_number = "0400"
-  elif (hour_number == 6):
-    hour_number = "0500"
-  elif (hour_number == 7):
-    hour_number = "0600"
-  elif (hour_number == 8):
-    hour_number = "0700"
-  elif (hour_number == 9):
-    hour_number = "0800"
-  elif (hour_number == 10):
-    hour_number = "0900"
-  elif (hour_number == 11):
-    hour_number = "1000"
-  elif (hour_number == 12):
-    hour_number = "1100"
-  elif (hour_number == 13):
-    hour_number = "1200"
-  elif (hour_number == 14):
-    hour_number = "1300"
-  elif (hour_number == 15):
-    hour_number = "1400"
-  elif (hour_number == 16):
-    hour_number = "1500"
-  elif (hour_number == 17):
-    hour_number = "1600"
-  elif (hour_number == 18):
-    hour_number = "1700"
-  elif (hour_number == 19):
-    hour_number = "1800"
-  elif (hour_number == 20):
-    hour_number = "1900"
-  elif (hour_number == 21):
-    hour_number = "2000"
-  elif (hour_number == 22):
-    hour_number = "2100"
-  elif (hour_number == 23):
-    hour_number = "2200"
-  elif (hour_number == 24):
-    hour_number = "2300"
-
-  # Operate the day and hour numbers
-  if (day_number == 1):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in sunday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-      # Appended the label of the stay associated with that day/hour tuple. We have only
-      # identified it. Now we need the duration of that exact stay, in that exact day/hour.
-      # For that, we need to find the spans that contain the stays for each label, and then
-      # match the days of the spans to the days in our day_of_the_week_list.
-      # When a match is found, it means we got the span corresponding to that label, in
-      # that exact day. We also need to make sure that the span is in the correct hour.
-      # If it is, we finally have the desired span, and only need to get its length.
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # final step: convert the arrays to comma-separated or hyphen-separated strings and return them on an array
-    # in which the first position has the label string and the second position has the time spent string
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-  elif (day_number == 2):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in monday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-  elif (day_number == 3):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in tuesday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-  elif (day_number == 4):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in wednesday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-  elif (day_number == 5):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in thursday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-  elif (day_number == 6):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in friday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-  elif (day_number == 7):
-    final = []
-    label_array = []
-    time_spent_array = []
-    for day in saturday_list:
-      # We ll calculate in the half hour, as a rough estimate
-      plus_half = '%04d' % (int(hour_number) + 30)
-      half_hour_later = life.where_when(day, plus_half)
-      if (not isinstance(half_hour_later, basestring)):
-        pass
-      elif (half_hour_later is not None):
-        label_array.append(half_hour_later)
-        for datum in label_array:
-          tmp = life.when_at(datum)
-        for span in tmp:
-          if (life_source.minutes_to_military(span.start) <= plus_half <= life_source.minutes_to_military(span.end)):
-            if (span.day == day):
-              time_spent_array.append(span.length())
-      else:
-        pass
-    # concatenated_labels = ", ".join(label_array)
-    # concatenated_times = ','.join(map(str, time_spent_array))
-    seen = set()
-    uniq = []
-    for x in label_array:
-        if x not in seen:
-            uniq.append(x)
-            seen.add(x)
-    final.append(uniq)
-    final.append(sum(time_spent_array))
-    return final
-
-
 class Stays_Graph(Resource):
   def get(self):
-        result = []
-        for day in range(1, 8):
-          for hour in range (1, 25):
-            time_label = moreTimeSpent(day, hour)
-            d = {
-              'day': day,
-              'hour': hour,
-              'time_spent': time_label[1],
-              'label': time_label[0]
-            }
-            result.append(d)
-        return result
-        
+        return time_spent_result
 
-# For each row of the stays table, construct a response
-# as shown below and return the JSON with the set of
-# responses. If a stay uses more than a one-hour block,
-# multiply the same response for each of the hours,
-# adjusting the time_spent on each one
+
+class Hexbin_Tracks_Data(Resource):
+  def get(self):
+    response = []
+    for datum in result:
+      d = {
+      'lon': datum[0],
+      'lat': datum[1],
+      'date': datum[2],
+      }
+      response.append(d)
+    return response
+        
 
 class Slider_Min_Date(Resource):
   def get(self):
@@ -620,6 +614,7 @@ class Slider_Max_Date(Resource):
 ######################### Endpoints and run ################################
 ############################################################################
 
+
 api.add_resource(Hexbin_Places_Data, '/hexbinPlaces')
 api.add_resource(Hexbin_Tracks_Data, '/hexbinTracks')
 api.add_resource(Calendar_Data, '/calendar')
@@ -630,10 +625,19 @@ api.add_resource(BarChart_TimeSpent_Data, '/barchartTime')
 api.add_resource(Chord_Data, '/chord')
 api.add_resource(Arc_Edges_Data, '/arcedges')
 api.add_resource(Arc_Nodes_Data, '/arcnodes')
-api.add_resource(Stays_Graph, '/staysgraph') # LAST
+api.add_resource(Stays_Graph, '/staysgraph') 
 api.add_resource(Slider_Min_Date, '/slidermin')
 api.add_resource(Slider_Max_Date, '/slidermax')
 
 
 if __name__ == '__main__':
+    #Temporary
+    print datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    start_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
+    Thread(target = staysGraphProcessing).start()
+    Thread(target = gpxParse).start()
+
+    #Temporary
+    end_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
     app.run(debug=True, host='0.0.0.0')
