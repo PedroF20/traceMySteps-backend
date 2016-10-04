@@ -216,36 +216,39 @@ def insertStay(cur, label, start_date, end_date, time_spent, date):
 
 
 def insertSegment(cur, segment):
-    insertLocation(cur, segment.location_from, segment.startPoint)
-    insertLocation(cur, segment.location_to, segment.endPoint)
+    # if hasattr(segment, 'location_from'): # SCALABILITY TEST
+        insertLocation(cur, segment.location_from, segment.startPoint)
+        insertLocation(cur, segment.location_to, segment.endPoint)
 
-    def toTsmp(d):
-        return psycopg2.Timestamp(d.year, d.month, d.day, d.hour, d.minute, d.second)
+        def toTsmp(d):
+            return psycopg2.Timestamp(d.year, d.month, d.day, d.hour, d.minute, d.second)
 
-    #tstamps = map(lambda p: p.time, segment.points)
-    tstamps = [p.time for p in segment.points]
+        #tstamps = map(lambda p: p.time, segment.points)
+        tstamps = [p.time for p in segment.points]
 
-    trip_start = segment.points[0].time.strftime("%Y-%m-%d")
-    
+        trip_start = segment.points[0].time.strftime("%Y-%m-%d")
+        
 
-    cur.execute("""
-            INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps, start_of_trip)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            RETURNING trip_id
-            """,
-            (   segment.location_from,
-                segment.location_to,
-                segment.points[0].time,
-                segment.points[-1].time,
-                dbBounds(getBounds(segment)),
-                dbPoints(segment.points),
-                tstamps,
-                trip_start
-                ))
-    trip_id = cur.fetchone()
-    trip_id = trip_id[0]
+        cur.execute("""
+                INSERT INTO trips (start_location, end_location, start_date, end_date, bounds, points, timestamps, start_of_trip)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING trip_id
+                """,
+                (   segment.location_from,
+                    segment.location_to,
+                    segment.points[0].time,
+                    segment.points[-1].time,
+                    dbBounds(getBounds(segment)),
+                    dbPoints(segment.points),
+                    tstamps,
+                    trip_start
+                    ))
+        trip_id = cur.fetchone()
+        trip_id = trip_id[0]
 
-    return trip_id
+        return trip_id
+    # else:
+    #     pass
 
 
 def connectDB():
@@ -294,6 +297,10 @@ for f in os.listdir(files_directory):
     files.append(f)
 files.sort()
 
+#Temporary
+print datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+start_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
 for f in files:
 	if f.endswith(".gpx"):
 		filename = os.path.join(files_directory, f)
@@ -308,3 +315,11 @@ load_from_life(cur)
 conn.commit()
 cur.close()
 conn.close()
+
+#Temporary
+end_date = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+
+print "ALL DATA IS PROCESSED.\nYOU CAN NOW CLOSE THIS."
+print start_date
+print "-------------------"
+print end_date
